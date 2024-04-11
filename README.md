@@ -26,5 +26,7 @@ presently this `app.py` code inserts, deletes, searches data in global fhir serv
          type="application/x-shockwave-flash"
          wmode="transparent" width="425" height="350" />
 </object>
-[https://youtu.be/iHn6OmCZwik](https://youtu.be/iHn6OmCZwik)
+[insert Demo](https://youtu.be/iHn6OmCZwik)
+[view Demo](https://youtu.be/Op5C65tiz1I)
+[delete](https://youtu.be/o_m1TGXyoug)
 
