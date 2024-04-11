@@ -16,3 +16,6 @@ for setting up the server, follow the below instructions :
 > docker pull hapiproject/hapi:latest ; docker run -p 8080:8080 hapiproject/hapi:latest
 > ```
 > - When you are able to see "0 deleted" then you can search `localhost:8080` on your web browser and start playing with it.
+
+# Status Quo
+presently this `app.py` code inserts data in global fhir server. (Please donot insert any valuable information because it can be accessed by any one)
