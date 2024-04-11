@@ -19,6 +19,6 @@ for setting up the server, follow the below instructions :
 
 # Status Quo
 presently this `app.py` code inserts, deletes, searches data in global fhir server. (Please donot insert any valuable information because it can be accessed by any one)
-![](insertion.webm)
-![](view.webm)
-![](delete.webm)
+![](insert.mp4)
+![](view.mp4)
+![](delete.mp4)
