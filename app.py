@@ -1,5 +1,6 @@
 import requests
 import json
+import pprint
 
 class Patient:
     
@@ -55,28 +56,43 @@ class Patient:
         response = requests.request("POST", complete_url, headers=headers, data=payload)
         # print(type(response.status_code))
         if(response.status_code == 201):
-            return 1
+            return response.json()["id"]
 
     @staticmethod
     def search(name):
         '''
         Implement this using APIs
         '''
-        pass
+        import requests
+        complete_url = Patient.url + "Patient?given=" + name + "&_include=*&_count=5&_pretty=true"
+
+        payload = {}
+        headers = {}
+
+        response = requests.request("GET", complete_url, headers=headers, data=payload)
+        if(response.json()["total"] > 0):
+            list_of_patients = response.json()["entry"]
+            for each_patient in list_of_patients :
+                pprint.pprint(each_patient["resource"])
+        else:
+            print("----- No Patient Exists -----")
 
     @staticmethod
-    def search_all():
+    def delete(id2):
         '''
         Implement this using APIs
         '''
-        pass
+        p_id = id2
 
-    @staticmethod
-    def delete(id):
-        '''
-        Implement this using APIs
-        '''
-        pass
+        complete_url = Patient.url + "Patient/" + str(p_id) +"?_pretty=true"
+        payload = {}
+        headers = {}
+
+        response = requests.request("DELETE", complete_url, headers=headers, data=payload)
+        if(response.status_code == 200):
+            print("------ COMPLETED DELETION --------")
+        else:
+            print("----- ERROR : Please provide correct Fields ------")
 
     @staticmethod
     def enter_new_patient():
@@ -89,8 +105,10 @@ class Patient:
         mobile = int(input("Enter the Mobile Number : "))
         
         patient = Patient(name, age, height, weight, mobile)
-        if patient.store():
+        id2 = patient.store()
+        if id2:
             print("----- Data Stored Successfully -----")
+            print("Your ID : ", id2)
 
     @staticmethod
     def view_patient():
@@ -98,19 +116,14 @@ class Patient:
         print("Viewing details of a patient...")
         name_to_search = input("Please enter the Name that you want to search : ")
         Patient.search(name_to_search)
-
-    @staticmethod
-    def view_all_patients():
-        # Function to view details of all patients
-        print("Viewing details of all patients...")
-        Patient.search_all()
+        print("------- SEARCH COMPLETED --------")
 
     @staticmethod
     def delete_patient_record():
         # Function to delete a patient's record
         print("Deleting a patient's record...")
-        id = int(input("Enter the ID of the Patient : "))
-        Patient.delete(id)
+        id2 = int(input("Enter the ID of the Patient : "))
+        Patient.delete(id2)
 
     @staticmethod
     def switch_case(option):
@@ -118,8 +131,7 @@ class Patient:
         switcher = {
             1: Patient.enter_new_patient,
             2: Patient.view_patient,
-            3: Patient.view_all_patients,
-            4: Patient.delete_patient_record
+            3: Patient.delete_patient_record
         }
         # Get the function corresponding to the user's input option
         selected_function = switcher.get(option, lambda: print("Invalid option"))
@@ -131,8 +143,7 @@ options = int(input("""
 Choose an Option from below :
 1) Enter New Patient
 2) View Patient
-3) View all patients
-4) Delete Patient Record
+3) Delete Patient Record
 """))
 
 Patient.switch_case(options)
