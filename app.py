@@ -3,7 +3,7 @@ import json
 
 class Patient:
     
-    url = "	http://hapi.fhir.org/baseR4/"
+    url = "http://hapi.fhir.org/baseR4/"
     
     def __init__(self, name, age, height, weight, mobile):
         self.name = name
