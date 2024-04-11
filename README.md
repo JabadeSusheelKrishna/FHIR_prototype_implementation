@@ -19,14 +19,8 @@ for setting up the server, follow the below instructions :
 
 # Status Quo
 presently this `app.py` code inserts, deletes, searches data in global fhir server. (Please donot insert any valuable information because it can be accessed by any one)
-<object width="425" height="350">
-  <param name="movie" value="http://www.youtube.com/user/wwwLoveWatercom?v=BTRN1YETpyg" />
-  <param name="wmode" value="transparent" />
-  <embed src="[https://youtu.be/iHn6OmCZwik](https://youtu.be/iHn6OmCZwik)"
-         type="application/x-shockwave-flash"
-         wmode="transparent" width="425" height="350" />
-</object>
-[insert Demo](https://youtu.be/iHn6OmCZwik)
-[view Demo](https://youtu.be/Op5C65tiz1I)
-[delete](https://youtu.be/o_m1TGXyoug)
+
+![insert Demo](https://youtu.be/iHn6OmCZwik)
+![view Demo](https://youtu.be/Op5C65tiz1I)
+![delete](https://youtu.be/o_m1TGXyoug)
 
