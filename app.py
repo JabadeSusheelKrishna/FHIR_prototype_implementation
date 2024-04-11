@@ -1,4 +1,10 @@
+import requests
+import json
+
 class Patient:
+    
+    url = "	http://hapi.fhir.org/baseR4/"
+    
     def __init__(self, name, age, height, weight, mobile):
         self.name = name
         self.age = age
@@ -10,7 +16,46 @@ class Patient:
         '''
         Implement this using API calls
         '''
-        pass
+        complete_url = Patient.url + "Patient?_format=json"
+        payload = json.dumps({
+          "resourceType": "Patient",
+          "id": "example-patient",
+          "name": [
+            {
+              "use": "official",
+              "given": [
+                self.name
+            ]
+            }
+        ],
+        "telecom": [
+            {
+            "system": "phone",
+            "value": str(self.mobile),
+            "use": "mobile"
+            }
+        ],
+        "height": {
+            "value": self.height,
+            "unit": "cm",
+            "system": "http://unitsofmeasure.org",
+            "code": "cm"
+        },
+        "weight": {
+            "value": self.weight,
+            "unit": "kg",
+            "system": "http://unitsofmeasure.org",
+            "code": "kg"
+        }
+        })
+        headers = {
+          'Content-Type': 'application/json'
+        }
+
+        response = requests.request("POST", complete_url, headers=headers, data=payload)
+        # print(type(response.status_code))
+        if(response.status_code == 201):
+            return 1
 
     @staticmethod
     def search(name):
