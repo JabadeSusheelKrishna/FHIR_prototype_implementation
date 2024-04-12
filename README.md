@@ -24,3 +24,13 @@ presently this `app.py` code inserts, deletes, searches data in global fhir serv
 [view Demo](https://youtu.be/Op5C65tiz1I)
 [delete](https://youtu.be/o_m1TGXyoug)
 
+# Running Program on Local Server
+> Setup the server on your Local Host Using Docker. (Instructions are given above)
+> Now Just Test the Server by clicking on Conformance button. You should be able to see 200/201 response code.
+> Now to start working on the server, we first need to create an organisation
+>   - Search `organisations` tab from side - bar
+>   - Go to Crud operations
+>   - Go to create and enter this ```{ "resourceType": "Organization" }``` json and click on create button.
+>   - if you get 200/201 as response code, then Congradulations, You Setup your server.
+>   - Now you can start sending data and receiving data from the server.
+> Now Copy the Link eg : ```localhost:8080/fhir``` and paste it in `Line 7 : app.py`.
