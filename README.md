@@ -37,4 +37,6 @@ presently this `app.py` code inserts, deletes, searches data in global fhir serv
 > json and click on create button.
 >   - if you get 200/201 as response code, then Congradulations, You Setup your server.
 >   - Now you can start sending data and receiving data from the server.
-> Now Copy the Link eg : ```localhost:8080/fhir``` and paste it in `Line 7 : app.py`.
+> Now Copy the Link eg : 
+> ```localhost:8080/fhir```
+>  and paste it in `Line 7 : app.py`.
