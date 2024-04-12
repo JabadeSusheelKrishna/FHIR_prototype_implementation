@@ -25,7 +25,7 @@ presently this `app.py` code inserts, deletes, searches data in global fhir serv
 [delete](https://youtu.be/o_m1TGXyoug)
 
 # Running Program on Local Server
-> Setup the server on your Local Host Using Docker. (Instructions are given above)
+> Setup the server on your Local Host Using Docker. (Instructions are given ![above](https://github.com/JabadeSusheelKrishna/FHIR_prototype_implementation?tab=readme-ov-file#server-setup))
 > Now Just Test the Server by clicking on Conformance button. You should be able to see 200/201 response code.
 > Now to start working on the server, we first need to create an organisation
 >   - Search `organisations` tab from side - bar
