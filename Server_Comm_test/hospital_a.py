@@ -2,13 +2,26 @@
 This code is able to add patient, search patient, delete patient
 '''
 
-import requests
 import json
 import pprint
+import requests
 
+def send_request(url, header):
+    try:
+        print("Sending this as header : ", header)
+        response = requests.request("GET", url, headers=header)
+        if response.status_code == 200:
+            print("GET request successfully sent!")
+            print("\nResponse:", response.text) # Here it recieves all the details
+        else:
+            print("Failed to send GET request. Status code:", response.status_code)
+    except requests.RequestException as e:
+        print("Error:", e)
+    
 class Patient:
     
     url = "http://hapi.fhir.org/baseR4/"
+    central_server = "http://127.0.0.1:5000/"
     
     def __init__(self, name, age, height, weight, mobile):
         self.name = name
@@ -128,6 +141,18 @@ class Patient:
         print("Deleting a patient's record...")
         id2 = int(input("Enter the ID of the Patient : "))
         Patient.delete(id2)
+        
+    @staticmethod
+    def get_patient_details():
+        print("For Now, You can only access patients admission details")
+        print("Please Enter the Patient Details to get his information")
+        name = input("Enter Name of the Patient : ")
+        start_time = input("Enter the Start time : ")
+        end_time = input("Enter the End time : ")
+        
+        send_url = Patient.central_server + str(name)
+        send_headers = {"start-time": start_time, "end-time": end_time}
+        send_request(send_url, send_headers)
 
     @staticmethod
     def switch_case(option):
@@ -135,7 +160,8 @@ class Patient:
         switcher = {
             1: Patient.enter_new_patient,
             2: Patient.view_patient,
-            3: Patient.delete_patient_record
+            3: Patient.delete_patient_record,
+            4: Patient.get_patient_details
         }
         # Get the function corresponding to the user's input option
         selected_function = switcher.get(option, lambda: print("Invalid option"))
@@ -146,8 +172,9 @@ class Patient:
 options = int(input("""
 Choose an Option from below :
 1) Enter New Patient
-2) View Patient
+2) View Patient in Local Server
 3) Delete Patient Record
+4) Get Details of the patient from other hospitals
 """))
 
 Patient.switch_case(options)
