@@ -1,32 +1,8 @@
-# '''
-# This code is to implement the central server
-# '''
 
-# from flask import Flask, jsonify, request
-# import time
-
-# app = Flask(__name__)
-
-# @app.route('/name=<string:name>', methods=['GET'])
-# def hello(name):
-#     time.sleep(1)  # Simulating some processing time
-#     print(f"Received request with name: {name}")
-#     print("Starting time recieved : ", request.headers['start-time'])
-#     print("Ending time recieved : ", request.headers['end-time'])
-#     return jsonify({"message": f"Hello, {name}!"})
-
-# @app.route('/id=<string:id>', methods=['GET'])
-# def hi(id):
-#     print("hello kk", id)
-#     return jsonify({"message": f"Hello, {id}!"})
-
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-from flask import Flask, jsonify, request
 import time
+from flask import Flask, jsonify, request
 import requests
+import json
 
 app = Flask(__name__)
 
@@ -34,19 +10,24 @@ app = Flask(__name__)
 id_list = ['id1', 'id2', 'id3', 'id4', 'id5']
 
 hospitals = {
-    'id1': 5051,
-    'id2': 5052,
-    'id3': 5053,
+    'id2': 5052
 }
 
+hospital_count = 2      # Stores no of hospitals registered
+
 def send_requests_to_other_ids(current_id, name):
+    '''
+    Sends the GET request to other servers
+    '''
     responses = {}
     count = 0
     for id in hospitals:
-        print(id)
-        if id != current_id:
-            print("hi")
+        # print(type(current_id))
+        if str(hospitals[id]) != current_id:
+            # This is where we need to send request to respective server according to ID
+
             url = f"http://127.0.0.1:{hospitals[id]}/patient-details"
+            print("Request sent to : ", url)
             try:
                 response = requests.get(url, params={'name':{name}})
                 responses[count] = response.json()
@@ -70,6 +51,30 @@ def handle_request():
     # Send requests to all other IDs
     responses = send_requests_to_other_ids(hospital_id, name)
     return jsonify(responses)
+    # return "Hello"
+
+@app.route('/register', methods=['GET'])
+def registeration():
+    username = request.args.get('username')
+    password = request.args.get('password')
+    port_number = request.args.get('port')
+    
+    user_credentials = {"username" : username, "password" : password, "port" : port_number}
+    
+    with open('accounts.json', 'r') as file:
+        data = json.load(file)
+    
+    hospitals[username] = port_number
+    print("Hospitals Dictionary : ", hospitals)
+    
+    if username in [user['username'] for user in data["accounts"]]:
+        print("Data Already Exists, Please Proceed Further")
+    else:
+        data["accounts"].append(user_credentials)
+        print(data)
+        with open('accounts.json', 'w') as file:
+            json.dump(data, file)
+    return "Successfully registered\n"
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

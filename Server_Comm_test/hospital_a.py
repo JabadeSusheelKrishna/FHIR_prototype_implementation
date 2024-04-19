@@ -5,6 +5,8 @@ This code is able to add patient, search patient, delete patient
 import json
 import pprint
 import requests
+from flask import Flask
+import time
 
 def send_request(url, header):
     try:
@@ -51,15 +53,16 @@ def generate_hash_id(first_name, last_name, dob):
 class Patient:
     
     # url = "http://hapi.fhir.org/baseR4/"
-    url = "http://localhost:8000/fhir/"
+    url = "http://localhost:8080/fhir/"
     central_server = "http://127.0.0.1:5000/"
     
-    def __init__(self, name, age, height, weight, mobile):
+    def __init__(self, name, age, height, weight, mobile, birthdate):
         self.name = name
         self.age = age
         self.height = height
         self.weight = weight
         self.mobile = mobile
+        self.birthdate = birthdate
 
     def store(self):
         '''
@@ -95,17 +98,19 @@ class Patient:
             "unit": "kg",
             "system": "http://unitsofmeasure.org",
             "code": "kg"
-        }
+        },
+        "birthDate": "2005-10"
         })
         headers = {
           'Content-Type': 'application/json'
         }
-        print("qwertyuiop",complete_url)
+        print("Complete URL check : ",complete_url)
 
         response = requests.request("POST", complete_url, headers=headers, data=payload)
-        # print(type(response.status_code))
         if(response.status_code == 201):
             return response.json()["id"]
+        else:
+            return "Error There"
 
     @staticmethod
     def search(name):
@@ -152,8 +157,9 @@ class Patient:
         height = int(input("Enter the Height : "))
         weight = int(input("Enter the Weight : "))
         mobile = int(input("Enter the Mobile Number : "))
+        birthdate = input("Enter Your Date of Birth in YYYY-MM : ")
         
-        patient = Patient(name, age, height, weight, mobile)
+        patient = Patient(name, age, height, weight, mobile, birthdate)
         id2 = patient.store()
         if id2:
             print("----- Data Stored Successfully -----")
@@ -174,30 +180,35 @@ class Patient:
         id2 = int(input("Enter the ID of the Patient : "))
         Patient.delete(id2)
 
-
     @staticmethod
     def get_patient_details():
         print("For Now, You can only access patients admission details")
         print("Please Enter the Patient Details to get his information")
         name = input("Enter Name of the Patient : ")
-        # start_time = input("Enter the Start time : ")
-        # end_time = input("Enter the End time : ")
-        id = input("Enter the Patient ID: ")
-
-        send_url = Patient.central_server + str(name)
+        id_of_patient = input("Enter the Hospital ID (Port) : ")
         params = {
         'patient': {name},
-        'id': {id}  # Assuming this is the hospital ID
+        'id': {id_of_patient}  # Assuming this is the hospital ID
         }
         response = requests.get(f"{Patient.central_server}/get-details", params=params)
-        # send_headers = {"start-time": start_time, "end-time": end_time}
-        # send_request(send_url, send_headers)
         if response.status_code == 200:
             data = response.json()
             print("Response from server:")
             print(data)
         else:
             print("Error:", response.status_code)
+            
+    @staticmethod
+    def register_to_server():
+        username = input("Enter the Username : ")
+        password = input("Enter the password : ")
+        port = 5051
+        
+        url = "http://127.0.0.1:5000/register?username=hospetal&password=Admin&port=5051"
+        payload = {}
+        headers = {}
+        response = requests.request("GET", url, headers=headers, data=payload)
+        print(response)
 
     @staticmethod
     def switch_case(option):
@@ -206,7 +217,8 @@ class Patient:
             1: Patient.enter_new_patient,
             2: Patient.view_patient,
             3: Patient.delete_patient_record,
-            4: Patient.get_patient_details
+            4: Patient.get_patient_details,
+            6: Patient.register_to_server
         }
         # Get the function corresponding to the user's input option
         selected_function = switcher.get(option, lambda: print("Invalid option"))
@@ -221,6 +233,7 @@ Choose an Option from below :
 3) Delete Patient Record
 4) Get Details of the patient from other hospitals
 5) Get id of the patient from other hospitals
+6) Register my hospital to GetMyEHR
 
 """))
 
