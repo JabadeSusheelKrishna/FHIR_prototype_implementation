@@ -13,7 +13,10 @@ for setting up the server, follow the below instructions :
 > ```
 > - Now run the following commands to start the server on your Local Host 8080 (This may take some time)
 > ```
-> docker pull hapiproject/hapi:latest ; docker run -p 8080:8080 hapiproject/hapi:latest
+> docker pull hapiproject/hapi:latest
+> ```
+> ```
+> docker run -p 8080:8080 hapiproject/hapi:latest
 > ```
 > - When you are able to see "0 deleted" then you can search `localhost:8080` on your web browser and start playing with it.
 
