@@ -3,6 +3,9 @@ import time
 from flask import Flask, jsonify, request
 import requests
 import json
+import random
+import string
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -10,6 +13,15 @@ app = Flask(__name__)
 id_list = ['id1', 'id2', 'id3', 'id4', 'id5']
 
 hospitals = {}
+with open("accounts.json", "r") as file:
+    data_formed = json.load(file)["accounts"]
+for each_entry in data_formed:
+    hospitals[each_entry["username"]] = each_entry["port"]
+
+def generate_token():
+    length = 10
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for _ in range(length))
 
 def send_requests_to_other_ids(current_id, name):
     '''
@@ -41,12 +53,29 @@ def handle_request():
 
     name = request.args.get('patient')
     hospital_id = request.args.get('id')
+    username = request.args.get('username')
+    token = request.args.get('access_token')
    
     print(name, hospital_id)
     
+    with open("accounts.json", "r") as file:
+        data_f = json.load(file)["accounts"]
+        
+    print("----able to access file----")
+     
+    permission_got = 0   
+    for each_entry in data_f : 
+        print("Actual : ",each_entry["username"], each_entry["token"])
+        print("given in : ", username, token)
+        if(username == each_entry["username"] and token == each_entry["token"]):
+            permission_got = 1
     # Send requests to all other IDs
-    responses = send_requests_to_other_ids(hospital_id, name)
-    return jsonify(responses)
+    if(permission_got):
+        print("Sending the Response :::::::: ")
+        responses = send_requests_to_other_ids(hospital_id, name)
+        return jsonify(responses)
+    else:
+        return "No Authorization. Please Login and Paste the correct token"
     # return "Hello"
 
 @app.route('/register', methods=['GET'])
@@ -55,8 +84,14 @@ def registeration():
     password = request.args.get('password')
     port_number = request.args.get('port')
     
-    user_credentials = {"username" : username, "password" : password, "port" : port_number}
-    
+    user_credentials = {
+        "username" : username, 
+        "password" : password, 
+        "port" : port_number, 
+        "last_login" : "NONE", 
+        "token" : "NONE"
+        }
+
     # Reading data
     with open('accounts.json', 'r') as file:
         print("Hello")
@@ -87,10 +122,15 @@ def login():
     for user in data["accounts"]:
         if(user["username"] == username):
             if(user["password"] == password):
-                return "Login Success : [Generating Token in Future]"
+                if(user["last_login"] == "NONE"):
+                    user["last_login"] = datetime.now().strftime("%H:%M:%S")
+                    user["token"] = generate_token()
+                    with open('accounts.json', 'w') as file:
+                        json.dump(data, file)
+                return user["token"]
             else:
-                return "Incorrect Credentials!!! Please try again"
-    return "Account Not Found! Please register Again"
+                return "-:[ERROR1]:- Incorrect Credentials!!! Please try again"
+    return "-:[ERROR2]:- Account Not Found! Please register Again"
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

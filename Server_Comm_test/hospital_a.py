@@ -205,13 +205,17 @@ class Patient:
         print("Please Enter the Patient Details to get his information")
         name = input("Enter Name of the Patient : ")
         id_of_patient = input("Enter the Hospital ID (Port) : ")
+        username = input("Enter Hospital Username : ")
+        token = input("Enter the token generated after Login : ")
         params = {
         'patient': {name},
-        'id': {id_of_patient}  # Assuming this is the hospital ID
+        'id': {id_of_patient},  # Assuming this is the hospital ID
+        'username' : {username},
+        'access_token' : {token}
         }
         response = requests.get(f"{Patient.central_server}/get-details", params=params)
         if response.status_code == 200:
-            data = response.json()
+            data = response.text
             print("Response from server:")
             print(data)
         else:
@@ -221,9 +225,9 @@ class Patient:
     def register_to_server():
         username = input("Enter the Username : ")
         password = input("Enter the password : ")
-        port = 5052
+        port = input("Enter the IP address of hospital : ")
         
-        url = "http://127.0.0.1:5000/register?username="+username+"&password="+password+"&port=5051"
+        url = "http://127.0.0.1:5000/register?username="+username+"&password="+password+"&port="+port
         print("Sending to URL : ", url)
         payload = {}
         headers = {}
@@ -240,7 +244,7 @@ class Patient:
         username = input("Enter the Username : ")
         password = input("Enter the Password : ")
         response = send_login_request(username, password)
-        print("--------Response : {} --------", response)
+        print("--------Response : Access_Token : {} --------", response)
 
     @staticmethod
     def switch_case(option):
