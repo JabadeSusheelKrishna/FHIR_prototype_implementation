@@ -9,11 +9,7 @@ app = Flask(__name__)
 # Sample list of IDs (you can replace this with your own list of IDs)
 id_list = ['id1', 'id2', 'id3', 'id4', 'id5']
 
-hospitals = {
-    'id2': 5052
-}
-
-hospital_count = 2      # Stores no of hospitals registered
+hospitals = {}
 
 def send_requests_to_other_ids(current_id, name):
     '''
@@ -61,20 +57,40 @@ def registeration():
     
     user_credentials = {"username" : username, "password" : password, "port" : port_number}
     
+    # Reading data
     with open('accounts.json', 'r') as file:
+        print("Hello")
         data = json.load(file)
-    
+    # Storing in Memory for faster access.
     hospitals[username] = port_number
     print("Hospitals Dictionary : ", hospitals)
     
     if username in [user['username'] for user in data["accounts"]]:
-        print("Data Already Exists, Please Proceed Further")
+        return "Data Already Exists, Please Proceed Loggin in"
     else:
         data["accounts"].append(user_credentials)
         print(data)
         with open('accounts.json', 'w') as file:
             json.dump(data, file)
     return "Successfully registered\n"
+
+@app.route('/login', methods=['POST'])
+def login():
+    headers = request.headers
+    username = headers.get('username')
+    password = headers.get('password')
+    
+    # # Reading data
+    with open('accounts.json', 'r') as file:
+        data = json.load(file)
+    
+    for user in data["accounts"]:
+        if(user["username"] == username):
+            if(user["password"] == password):
+                return "Login Success : [Generating Token in Future]"
+            else:
+                return "Incorrect Credentials!!! Please try again"
+    return "Account Not Found! Please register Again"
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

@@ -8,6 +8,8 @@ import requests
 from flask import Flask
 import time
 
+getMyEHR_url = "http://127.0.0.1:5000/"
+
 def send_request(url, header):
     try:
         print("Sending this as header : ", header)
@@ -19,7 +21,24 @@ def send_request(url, header):
             print("Failed to send GET request. Status code:", response.status_code)
     except requests.RequestException as e:
         print("Error:", e)
-    
+        
+def send_login_request(username, password):
+    '''
+    Sends the Username and password as POST request to the server
+    '''
+    url = getMyEHR_url + 'login'
+    payload = {}
+    headers = {
+        'username': username,
+        'password': password
+        }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    if(response.status_code in [200, 201]):
+        return response.text
+    else:
+        return response
+
 import hashlib
 
 def generate_hash_id(first_name, last_name, dob):
@@ -202,13 +221,26 @@ class Patient:
     def register_to_server():
         username = input("Enter the Username : ")
         password = input("Enter the password : ")
-        port = 5051
+        port = 5052
         
-        url = "http://127.0.0.1:5000/register?username=hospetal&password=Admin&port=5051"
+        url = "http://127.0.0.1:5000/register?username="+username+"&password="+password+"&port=5051"
+        print("Sending to URL : ", url)
         payload = {}
         headers = {}
         response = requests.request("GET", url, headers=headers, data=payload)
-        print(response)
+        print(response.text)
+        
+    @staticmethod
+    def Login_to_server():
+        '''
+        This Function sends post request to the getMyEHR server.
+        Finally, it recieves the Message whether the Login is Succeeded
+        '''
+        print("-------- You are Now LOGGING IN -------")
+        username = input("Enter the Username : ")
+        password = input("Enter the Password : ")
+        response = send_login_request(username, password)
+        print("--------Response : {} --------", response)
 
     @staticmethod
     def switch_case(option):
@@ -218,22 +250,22 @@ class Patient:
             2: Patient.view_patient,
             3: Patient.delete_patient_record,
             4: Patient.get_patient_details,
-            6: Patient.register_to_server
+            5: Patient.register_to_server,
+            6: Patient.Login_to_server
         }
         # Get the function corresponding to the user's input option
         selected_function = switcher.get(option, lambda: print("Invalid option"))
         # Execute the selected function
         selected_function()
 
-# Main code
 options = int(input("""
 Choose an Option from below :
 1) Enter New Patient
 2) View Patient in Local Server
 3) Delete Patient Record
 4) Get Details of the patient from other hospitals
-5) Get id of the patient from other hospitals
-6) Register my hospital to GetMyEHR
+5) Register my hospital to GetMyEHR
+6) Login to getMyEHR
 
 """))
 
