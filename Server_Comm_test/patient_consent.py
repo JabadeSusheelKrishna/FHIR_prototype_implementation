@@ -98,6 +98,7 @@ def retrive_consent():
 
 @app.route('/share-consent', methods=['GET'])
 def share_consent():
+    print("----------------------------------")
     name = request.args.get('name')
     hospital = request.args.get('hospital')
     permission = 0

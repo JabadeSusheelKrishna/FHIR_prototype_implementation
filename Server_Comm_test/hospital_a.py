@@ -10,7 +10,7 @@ import time
 
 getMyEHR_url = "http://127.0.0.1:5000/"
 hospital_base = "http://127.0.0.1:5052/"
-patient_consent_server = "http://127.0.0.1.9000/"
+patient_consent_server = "http://127.0.0.1:9000/"
 
 def send_request(url, header):
     try:
@@ -196,9 +196,11 @@ class Patient:
         option = input("Do you want to share information in future (yes/no): ")
         name = f_name + l_name
         consent_url = patient_consent_server + "share-consent?name="+name+"&hospital="+hospital
+        print(consent_url)
         payload = {}
         headers = {}
         response = requests.request("GET", consent_url, headers=headers, data=payload)
+        print("response from patient : ", response.text)
 
         consent_id = ""
         if(response.text != "permission not given" and option == 'yes'):
