@@ -12,30 +12,41 @@ import random
 
 file_name = 'patients.json'
 
-waiting_time = 30
+waiting_time = 20
 
 def get_data_from_json(hash_id, hospital):
     with open(file_name, "r") as file:
-        data = json.load(file)["patients"]
+        data = json.load(file)
+        pat_data = data["patients"]
         
-    for each_patient in data:
+    for each_patient in pat_data:
+        print(".")
         if(each_patient["name"] == hash_id):
             each_patient["hospital"] = hospital
+            print("Dataaaa : ", data)
             with open(file_name, "w") as file:
-                json.dump(file, data)
+                json.dump(data, file)
     
     time.sleep(waiting_time)    # in this time patient has to give access
     
     with open(file_name, "r") as file:
-        data = json.loads(file)["patients"]
+        data = json.load(file)
+        pat_data = data["patients"]
     
-    for each_patient in data:
+    msg = "error"
+    for each_patient in pat_data:
         if(each_patient["name"] == hash_id and each_patient["hospital"] == hospital):
+            each_patient["hospital"] = ""
             if(each_patient["permission"] == 0):
-                return "No permission"
+                msg = "permission not given"
+                break
             else:
-                return each_patient["consent_id"]
-    return "error"
+                msg = each_patient["consent_id"]
+                each_patient["permission"] = 0
+    
+    with open(file_name, "w") as file:
+        json.dump(data, file)
+    return msg
 
 def store_data_to_json(dictionary):
     with open(file_name, "r") as file:
@@ -70,9 +81,9 @@ def update_permission(name, perm):
         if(each_patient["name"] == name):
             each_patient["permission"] = perm
             return_val = "permission_granted"
-    
+    new_data = {"patients" : data}
     with open(file_name, "w") as file:
-        json.dump(file, data) 
+        json.dump(new_data, file) 
     return return_val
 
 app = Flask(__name__)
@@ -102,8 +113,8 @@ def share_consent():
     
     store_data_to_json(patient)
     print("------------OK-------------")
-    # data = get_data_from_json(name, hospital)
-    return "data"
+    data = get_data_from_json(name, hospital)
+    return data
     
 @app.route('/check-request', methods=['GET'])
 def check_requests():
