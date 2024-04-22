@@ -1,0 +1,29 @@
+{
+    "resourceType": "Encounter",
+    "id": "abc",
+    "subject": {
+        "reference": "Patient/44674609"
+    },
+    "reason": [
+        {
+            "value": [
+                {
+                    "concept": {
+                        "text": "The patient had fever peaks over the last couple of days. He is worried about these peaks."
+                    }
+                }
+            ]
+        }
+    ],
+    "actualPeriod": {
+        "start": "2013-03-11",
+        "end": "2013-03-20"
+    },
+    "dietPreference" : [{
+        "coding" : [{
+          "system" : "http://snomed.info/sct",
+          "code" : "276026009",
+          "display" : "Fluid balance regulation"
+        }]
+      }]
+}

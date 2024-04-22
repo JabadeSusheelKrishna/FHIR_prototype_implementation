@@ -9,6 +9,8 @@ from flask import Flask
 import time
 
 getMyEHR_url = "http://127.0.0.1:5000/"
+hospital_base = "http://127.0.0.1:5052/"
+patient_consent_server = "http://127.0.0.1.9000/"
 
 def send_request(url, header):
     try:
@@ -38,6 +40,18 @@ def send_login_request(username, password):
         return response.text
     else:
         return response
+    
+def store_in_json(name, hash):
+    with open("hashes.json", "r") as file:
+        data = json.load(file)
+    
+    data[hash] = name
+    print("SSSSSSSSSSSSSSSSS : ", data)
+    
+    with open("hashes.json", "w") as file:
+        json.dump(data, file)
+    
+    print(" ------- Data Added ------ ")
 
 import hashlib
 
@@ -54,10 +68,10 @@ def generate_hash_id(first_name, last_name, dob):
         str: The generated hash ID.
     """
     # Split the date of birth into its components
-    day, month, year = dob.split("-")
+    year, month = dob.split("-")
     
     # Concatenate the components in the desired order
-    input_string = f"{first_name.lower()}{last_name.lower()}{day}{month}{year}"
+    input_string = f"{first_name.lower()}{last_name.lower()}{month}{year}"
     
     # Compute the SHA-256 hash and return the hexadecimal string
     hash_object = hashlib.sha256(input_string.encode())
@@ -124,7 +138,7 @@ class Patient:
           'Content-Type': 'application/json'
         }
         print("Complete URL check : ",complete_url)
-
+        
         response = requests.request("POST", complete_url, headers=headers, data=payload)
         if(response.status_code == 201):
             return response.json()["id"]
@@ -171,15 +185,23 @@ class Patient:
     def enter_new_patient():
         # Function to enter details of a new patient
         print("Entering details for a new patient...")
-        name = input("Enter the Name of the Patient : ")
+        f_name = input("Enter the First Name of the Patient : ")
+        l_name = input("Enter the second name of the Patient : ")
         age = int(input("Enter the Age : "))
         height = int(input("Enter the Height : "))
         weight = int(input("Enter the Weight : "))
         mobile = int(input("Enter the Mobile Number : "))
         birthdate = input("Enter Your Date of Birth in YYYY-MM : ")
-        
+        option = input("Do you want to share information in future : ")
+        consent_id = "" # get consent to share
+        if(option == "yes"):
+            pass
+        hash_key = generate_hash_id(f_name, l_name, birthdate) + consent_id
+        name = f_name + l_name
         patient = Patient(name, age, height, weight, mobile, birthdate)
         id2 = patient.store()
+        print("---------------------------------------------")
+        store_in_json(name, hash_key)
         if id2:
             print("----- Data Stored Successfully -----")
             print("Your ID : ", id2)
@@ -203,10 +225,16 @@ class Patient:
     def get_patient_details():
         print("For Now, You can only access patients admission details")
         print("Please Enter the Patient Details to get his information")
-        name = input("Enter Name of the Patient : ")
+        f_name = input("Enter First Name of the Patient : ")
+        l_name = input("Enter the Last name of the Patient : ")
+        dob = input("Enter the Data of birth YYYY-MM : ")
+        name = generate_hash_id(f_name, l_name, dob)
         id_of_patient = input("Enter the Hospital ID (Port) : ")
         username = input("Enter Hospital Username : ")
         token = input("Enter the token generated after Login : ")
+        print("----------- Waiting for Patient Consent -------------")
+        consent_id = "" # Need to send request to the Patient Consent for retrieve
+        name += consent_id
         params = {
         'patient': {name},
         'id': {id_of_patient},  # Assuming this is the hospital ID
@@ -247,6 +275,15 @@ class Patient:
         print("--------Response : Access_Token : {} --------", response)
 
     @staticmethod
+    def add_admission():
+        reason = input("Enter the reason : ")
+        start_time = input("Enter the Start Time : ")
+        end_time = input("Enter the End time : ")
+        diet_preference = input("Enter the Diet preference : ")
+        patient_id = input("Enter the Patient id : ")
+        print("Will be implemented in future")
+
+    @staticmethod
     def switch_case(option):
         # Switch case function to execute different actions based on user input
         switcher = {
@@ -255,7 +292,8 @@ class Patient:
             3: Patient.delete_patient_record,
             4: Patient.get_patient_details,
             5: Patient.register_to_server,
-            6: Patient.Login_to_server
+            6: Patient.Login_to_server,
+            7: Patient.add_admission
         }
         # Get the function corresponding to the user's input option
         selected_function = switcher.get(option, lambda: print("Invalid option"))
@@ -270,6 +308,7 @@ Choose an Option from below :
 4) Get Details of the patient from other hospitals
 5) Register my hospital to GetMyEHR
 6) Login to getMyEHR
+7) Add Admission Details
 
 """))
 
