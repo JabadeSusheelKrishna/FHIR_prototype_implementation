@@ -10,7 +10,7 @@ import time
 
 getMyEHR_url = "http://127.0.0.1:5000/"
 hospital_base = "http://127.0.0.1:5052/"
-patient_consent_server = "http://127.0.0.1.9000/"
+patient_consent_server = "http://127.0.0.1:9000/"
 
 def send_request(url, header):
     try:
@@ -185,6 +185,7 @@ class Patient:
     def enter_new_patient():
         # Function to enter details of a new patient
         print("Entering details for a new patient...")
+        hospital = input("Enter the Hospital Name : ")
         f_name = input("Enter the First Name of the Patient : ")
         l_name = input("Enter the second name of the Patient : ")
         age = int(input("Enter the Age : "))
@@ -192,12 +193,19 @@ class Patient:
         weight = int(input("Enter the Weight : "))
         mobile = int(input("Enter the Mobile Number : "))
         birthdate = input("Enter Your Date of Birth in YYYY-MM : ")
-        option = input("Do you want to share information in future : ")
-        consent_id = "" # get consent to share
-        if(option == "yes"):
-            pass
-        hash_key = generate_hash_id(f_name, l_name, birthdate) + consent_id
+        option = input("Do you want to share information in future (yes/no): ")
         name = f_name + l_name
+        consent_url = patient_consent_server + "share-consent?name="+name+"&hospital="+hospital
+        print(consent_url)
+        payload = {}
+        headers = {}
+        response = requests.request("GET", consent_url, headers=headers, data=payload)
+        print("response from patient : ", response.text)
+
+        consent_id = ""
+        if(response.text != "permission not given" and option == 'yes'):
+            consent_id = response.text
+        hash_key = generate_hash_id(f_name, l_name, birthdate) + consent_id
         patient = Patient(name, age, height, weight, mobile, birthdate)
         id2 = patient.store()
         print("---------------------------------------------")
@@ -234,6 +242,17 @@ class Patient:
         token = input("Enter the token generated after Login : ")
         print("----------- Waiting for Patient Consent -------------")
         consent_id = "" # Need to send request to the Patient Consent for retrieve
+        consent_url = patient_consent_server + "retrive-consent?name="+f_name+l_name+"&hospital="+username
+        payload = {}
+        headers = {
+          'username': 'susheelkrishna',
+          'password': 'Doraemon',
+          'Authorization': 'Bearer ddfdnjfhjfkd'
+        }
+        response = requests.request("GET", consent_url, headers=headers, data=payload)
+        if(response.text != "permission not given"):
+            consent_id = response.text
+
         name += consent_id
         params = {
         'patient': {name},

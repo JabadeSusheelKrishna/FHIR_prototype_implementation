@@ -1,1 +1,3 @@
-{"patients": [{"name": "susheel", "hospital": "kims", "permission": 0, "consent_id": "58935"}]}
+{
+    "patients" : []
+}
