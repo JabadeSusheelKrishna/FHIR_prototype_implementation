@@ -5,12 +5,13 @@ export default function HomeScreen() {
   const [hospitals, setHospitals] = useState("a");
   const isDarkMode = useColorScheme() === 'dark';
   const [name, setName] = useState("SusheelKrishna")
-
+  const [message,setMessage]=useState(".")
   const handleAccept = async () => {
     try {
-      const response = await fetch('https://91d2-14-139-82-6.ngrok-free.app/give-consent?name=abcd&permission=1');
+      const response = await fetch('https://ee6a-14-139-82-6.ngrok-free.app/give-consent?name=abcd&permission=1');
       const json = await response.text();
       console.log(json)
+      setMessage(json)
       // Handle response if needed
     } catch (error) {
       console.error(error);
@@ -19,9 +20,10 @@ export default function HomeScreen() {
   
   const handleDeny = async () => {
     try {
-      const response = await fetch('https://91d2-14-139-82-6.ngrok-free.app/give-consent?name=abcd&permission=0');
+      const response = await fetch('https://ee6a-14-139-82-6.ngrok-free.app/give-consent?name=abcd&permission=0');
       const json = await response.text();
       console.log(json)
+      setMessage(json)
       // Handle response if needed
     } catch (error) {
       console.error(error);
@@ -31,7 +33,7 @@ export default function HomeScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://91d2-14-139-82-6.ngrok-free.app/check-request?name=abcd');
+        const response = await fetch('https://ee6a-14-139-82-6.ngrok-free.app/check-request?name=abcd');
         const json = await response.text();
         setHospitals(json)
       } catch (error) {
@@ -63,6 +65,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         </View>
+            <Text style={styles.permission}>{message}</Text>
       </View>
     </View>
   );
@@ -73,7 +76,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 30,
     fontSize: 30,
-    fontFamily: "Poppins-Bold",
+    fontFamily: "Poppins-ExtraBold",
     color: "#211951",
     marginBottom: "12%",
   },
@@ -116,4 +119,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderColor: "#C7C8CC",
   },
+  permission:{
+    marginTop: 30,
+    fontSize: 18,
+    fontFamily: "Poppins-Bold",
+    color: "#211951",
+    marginBottom: "12%",
+  }
 });

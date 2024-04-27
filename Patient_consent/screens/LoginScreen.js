@@ -74,7 +74,6 @@ const LoginScreen = () => {
                 <View style={styles.inputView}>
                     <TextInput
                         style={styles.inputText}
-                        secureTextEntry
                         placeholder="Name"
                         placeholderTextColor="#003f5c"
                         onChangeText={text => setState({ ...state, name: text })} />
