@@ -6,8 +6,10 @@ import json
 import random
 import string
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # Sample list of IDs (you can replace this with your own list of IDs)
 id_list = ['id1', 'id2', 'id3', 'id4', 'id5']
@@ -78,12 +80,13 @@ def handle_request():
         return "No Authorization. Please Login and Paste the correct token"
     # return "Hello"
 
-@app.route('/register', methods=['GET'])
+@app.route('/register', methods=['POST'])
 def registeration():
-    username = request.args.get('username')
-    password = request.args.get('password')
-    port_number = request.args.get('port')
-    
+    print("hello world")
+    headers = request.json
+    username = headers.get('username')
+    password = headers.get('password')
+    port_number = headers.get('port')
     user_credentials = {
         "username" : username, 
         "password" : password, 
@@ -99,7 +102,7 @@ def registeration():
     # Storing in Memory for faster access.
     hospitals[username] = port_number
     print("Hospitals Dictionary : ", hospitals)
-    
+
     if username in [user['username'] for user in data["accounts"]]:
         return "Data Already Exists, Please Proceed Loggin in"
     else:
@@ -111,7 +114,8 @@ def registeration():
 
 @app.route('/login', methods=['POST'])
 def login():
-    headers = request.headers
+    headers = request.json
+    print("Headers : ",headers)
     username = headers.get('username')
     password = headers.get('password')
     
@@ -127,7 +131,8 @@ def login():
                     user["token"] = generate_token()
                     with open('accounts.json', 'w') as file:
                         json.dump(data, file)
-                return user["token"]
+                print(user["token"])
+                return {"aa":user["token"]}
             else:
                 return "-:[ERROR1]:- Incorrect Credentials!!! Please try again"
     return "-:[ERROR2]:- Account Not Found! Please register Again"

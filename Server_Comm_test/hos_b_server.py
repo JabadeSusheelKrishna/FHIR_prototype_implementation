@@ -10,7 +10,7 @@ import json
 
 
 app = Flask(__name__)
-url = "http://localhost:8080/fhir/"
+url = "http://localhost:8000/fhir/"
 
 Dictionary = {"hash" : "name"}
 
