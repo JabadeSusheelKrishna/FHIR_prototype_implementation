@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Encounter Data</title>
+<style>
+  #encounterData {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  .encounter-info {
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+  <h1>Patient Encounter Data</h1>
+  <label for="patientId">Enter Patient ID:</label>
+  <input type="text" id="patientId">
+  <button onclick="getEncounterData()">Get Encounter Data</button>
+  <div id="encounterData"></div>
+
+  <script>
+    function getEncounterData() {
+      var patientId = document.getElementById('patientId').value;
+      var url = 'http://localhost:8000/fhir/Encounter?patient=' + patientId + '&_pretty=true';
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          var responseData = JSON.parse(xhr.responseText);
+          displayEncounterData(responseData);
+        } else {
+          document.getElementById('encounterData').innerHTML = 'Error fetching data. Status: ' + xhr.status;
+        }
+      };
+      xhr.onerror = function() {
+        document.getElementById('encounterData').innerHTML = 'Error fetching data.';
+      };
+      xhr.send();
+    }
+
+    function displayEncounterData(responseData) {
+      var encounter = responseData.entry[0].resource;
+
+      var start = encounter.period.start;
+      var end = encounter.period.end;
+      var reason = encounter.reasonCode[0].coding[0].display;
+
+      var encounterInfo = document.createElement('div');
+      encounterInfo.classList.add('encounter-info');
+      encounterInfo.innerHTML = '<strong>Start:</strong> ' + start + '<br>' +
+                                '<strong>End:</strong> ' + end + '<br>' +
+                                '<strong>Reason:</strong> ' + reason;
+
+      document.getElementById('encounterData').innerHTML = '';
+      document.getElementById('encounterData').appendChild(encounterInfo);
+    }
+  </script>
+</body>
+</html>

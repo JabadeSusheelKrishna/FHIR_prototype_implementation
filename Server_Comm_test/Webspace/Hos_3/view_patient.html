@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FHIR Patient Lookup</title>
+    <style>
+        #response {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .patient-info {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+
+        .patient-info h2 {
+            margin-top: 0;
+        }
+
+        .patient-info p {
+            margin: 0;
+        }
+    </style>
+    <script>
+        function getPatientData() {
+            var name = document.getElementById("nameInput").value;
+            var url = "http://localhost:8000/fhir/Patient?name="+name+"&_pretty=true"
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    displayPatientInfo(response);
+                }
+            };
+            xhr.send();
+        }
+
+        function displayPatientInfo(response) {
+            var entry = response.entry[0];
+            var patient = entry.resource;
+            
+            var patientInfoDiv = document.getElementById("patientInfo");
+            patientInfoDiv.innerHTML = ""; // Clear previous content
+            
+            var patientDiv = document.createElement("div");
+            patientDiv.classList.add("patient-info");
+            
+            var name = patient.name[0].given[0];
+            var phone = patient.telecom[0].value;
+            var birthDate = patient.birthDate;
+
+            var nameHeading = document.createElement("h2");
+            nameHeading.textContent = "Name: " + name;
+            
+            var phonePara = document.createElement("p");
+            phonePara.textContent = "Phone: " + phone;
+            
+            var birthDatePara = document.createElement("p");
+            birthDatePara.textContent = "Birth Date: " + birthDate;
+            
+            patientDiv.appendChild(nameHeading);
+            patientDiv.appendChild(phonePara);
+            patientDiv.appendChild(birthDatePara);
+            
+            patientInfoDiv.appendChild(patientDiv);
+        }
+    </script>
+</head>
+<body>
+    <h1>FHIR Patient Lookup</h1>
+    <label for="nameInput">Enter Name:</label>
+    <input type="text" id="nameInput">
+    <button onclick="getPatientData()">Search</button>
+    <div id="patientInfo"></div>
+</body>
+</html>

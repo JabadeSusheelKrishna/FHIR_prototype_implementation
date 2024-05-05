@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Row to Table</title>
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+</style>
+</head>
+<body>
+
+<table id="myTable">
+    <thead>
+        <tr>
+            <th>Row Number</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be added here -->
+    </tbody>
+</table>
+
+<button onclick="addRow()">Add Row</button>
+
+<script>
+function addRow() {
+    var table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
+    var newRow = table.insertRow(table.rows.length);
+    var cell = newRow.insertCell(0);
+    var rowNum = table.rows.length;
+    cell.innerHTML = "Hello <br> Hi";
+}
+</script>
+
+</body>
+</html>

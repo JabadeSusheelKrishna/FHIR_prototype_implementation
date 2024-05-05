@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Patient</title>
+</head>
+
+<body>
+  <h1>Add Patient</h1>
+  <form id="patientForm">
+    <label for="hospital">Hospital:</label>
+    <input type="text" id="hospital" name="hospital"><br><br>
+    <label for="fname">First Name:</label>
+    <input type="text" id="fname" name="fname"><br><br>
+    <label for="lname">Last Name:</label>
+    <input type="text" id="lname" name="lname"><br><br>
+    <label for="mobile">Mobile:</label>
+    <input type="text" id="mobile" name="mobile"><br><br>
+    <label for="height">Height (cm):</label>
+    <input type="number" id="height" name="height"><br><br>
+    <label for="weight">Weight (kg):</label>
+    <input type="number" id="weight" name="weight"><br><br>
+    <label for="birthDate">Birth Date:</label>
+    <input type="date" id="birthDate" name="birthDate"><br><br>
+    <label for="consent">Share data (yes/no) :</label>
+    <input type="text" id="consent" name="consent"><br><br>
+    <button type="submit">Submit</button>
+  </form>
+  <script>
+
+    async function postData(url = '', data = {}) {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        throw new Error('Error adding patient. Please try again later.');
+      }
+      return response.json();
+    }
+
+    async function generateHash(url = '') {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Error generating hash. Please try again later.');
+      }
+      return response.text();
+    }
+
+    async function appendHashToFile(hash, fullname) {
+      try {
+        const response = await fetch("http://127.0.0.1:5051/store-hash-in-json", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ hash: hash, fullname: fullname })
+        });
+
+        const responseData = await response.text();
+        console.log(responseData);
+      } catch (error) {
+        console.error("Error appending hash to file:", error);
+      }
+    }
+
+    async function fetchConsent(url = '') {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow"
+      };
+      const response = await fetch(url, requestOptions);
+      if (!response.ok) {
+        throw new Error('Error fetching patient consent. Please try again later.');
+      }
+      return response.text();
+    }
+
+    document.getElementById('patientForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const formData = {
+        "resourceType": "Patient",
+        "id": "example-patient",
+        "name": [
+          {
+            "use": "official",
+            "given": [
+              document.getElementById('fname').value+
+              document.getElementById('lname').value
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": document.getElementById('mobile').value,
+            "use": "mobile"
+          }
+        ],
+        "height": {
+          "value": document.getElementById('height').value,
+          "unit": "cm",
+          "system": "http://unitsofmeasure.org",
+          "code": "cm"
+        },
+        "weight": {
+          "value": document.getElementById('weight').value,
+          "unit": "kg",
+          "system": "http://unitsofmeasure.org",
+          "code": "kg"
+        },
+        "birthDate": document.getElementById('birthDate').value,
+      };
+
+      try {
+        const responseData = await postData("http://127.0.0.1:8000/fhir/Patient?_format=json", formData);
+        console.log(responseData);
+        alert('Patient added successfully!');
+
+        const fir_name = document.getElementById('fname').value;
+        const las_name = document.getElementById('lname').value;
+        const fullname = fir_name + las_name
+        const birth_date = document.getElementById('birthDate').value;
+
+        const hashUrl = `http://127.0.0.1:5051/give-me-hash?fname=${fir_name}&lname=${las_name}&dob=${birth_date}`;
+        var hash = await generateHash(hashUrl);
+        console.log('Hash generated successfully.');
+
+        const form_consent = document.getElementById('consent').value
+        if (form_consent == "yes") {
+          const hospital = document.getElementById('hospital').value;
+          const consentUrl = `http://127.0.0.1:9005/share-consent?name=${fullname}&hospital=${hospital}`;
+          const consentResponse = await fetchConsent(consentUrl);
+          console.log(consentResponse);
+
+          if (consentResponse != "permission not given") {
+            hash += consentResponse
+          }
+        }
+
+        alert(hash)
+        await appendHashToFile(hash, fullname);
+
+      } catch (error) {
+        console.error('Error:', error.message);
+        alert(error.message);
+      }
+    });
+  </script>
+</body>
+
+</html>

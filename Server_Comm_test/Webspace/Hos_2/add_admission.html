@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encounter Form</title>
+</head>
+<body>
+    <h2>Encounter Form</h2>
+    <form id="encounterForm">
+        <label for="patient_id">Patient ID:</label><br>
+        <input type="text" id="patient_id" name="patient_id"><br>
+        <label for="start_time">Start Time:</label><br>
+        <input type="date" id="start_time" name="start_time"><br>
+        <label for="end_time">End Time:</label><br>
+        <input type="date" id="end_time" name="end_time"><br>
+        <label for="reason">Reason:</label><br>
+        <input type="text" id="reason" name="reason"><br><br>
+        <button type="button" onclick="submitEncounter()">Submit</button>
+    </form>
+
+    <script>
+        function submitEncounter() {
+            var patient_id = document.getElementById("patient_id").value;
+            var start_time = document.getElementById("start_time").value;
+            var end_time = document.getElementById("end_time").value;
+            var reason = document.getElementById("reason").value;
+            console.log("Start : ", start_time)
+
+            var payload = {
+                "resourceType": "Encounter",
+                "id": "example",
+                "subject": {
+                    "reference": "Patient/" + patient_id
+                },
+                "period": {
+                    "start": start_time + "T00:00:00Z",
+                    "end": end_time + "T00:00:00Z"
+                },
+                "reasonCode": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "123456",
+                                "display": reason
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            // Convert payload to JSON string
+            var payloadString = JSON.stringify(payload);
+
+            // Send POST request
+            fetch("http://localhost:8000/fhir/Encounter", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: payloadString
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                alert("Encounter successfully submitted!");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error occurred while submitting encounter.");
+            });
+        }
+    </script>
+</body>
+</html>

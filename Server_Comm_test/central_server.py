@@ -6,8 +6,11 @@ import json
 import random
 import string
 from datetime import datetime
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app)
 
 # Sample list of IDs (you can replace this with your own list of IDs)
 id_list = ['id1', 'id2', 'id3', 'id4', 'id5']
@@ -62,11 +65,9 @@ def handle_request():
         data_f = json.load(file)["accounts"]
         
     print("----able to access file----")
-     
+    
     permission_got = 0   
     for each_entry in data_f : 
-        print("Actual : ",each_entry["username"], each_entry["token"])
-        print("given in : ", username, token)
         if(username == each_entry["username"] and token == each_entry["token"]):
             permission_got = 1
     # Send requests to all other IDs
@@ -78,7 +79,7 @@ def handle_request():
         return "No Authorization. Please Login and Paste the correct token"
     # return "Hello"
 
-@app.route('/register', methods=['GET'])
+@app.route('/register', methods=['POST', 'GET'])
 def registeration():
     username = request.args.get('username')
     password = request.args.get('password')
@@ -133,4 +134,4 @@ def login():
     return "-:[ERROR2]:- Account Not Found! Please register Again"
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5050, debug=True)

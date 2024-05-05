@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delete Patient</title>
+</head>
+<body>
+
+<h2>Delete Patient</h2>
+
+<input type="text" id="patientId" placeholder="Enter Patient ID">
+<button onclick="deletePatient()">Delete</button>
+
+<script>
+function deletePatient() {
+    var p_id = document.getElementById("patientId").value;
+    var url = "http://127.0.0.1:8000/fhir/Patient/" + p_id + "?_pretty=true";
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("DELETE", url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                alert("Patient deleted successfully.");
+            } else {
+                alert("Error deleting patient. Status code: " + xhr.status);
+            }
+        }
+    };
+    xhr.send();
+}
+</script>
+
+</body>
+</html>

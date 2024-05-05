@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+</head>
+<body>
+    <h2>Login Form</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Get the values from the form
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            // Construct the headers
+            var headers = new Headers();
+            headers.append('Content-Type', 'application/json');
+            headers.append('username', username);
+            headers.append('password', password);
+
+            // Construct the request object
+            var requestOptions = {
+                method: 'POST',
+                headers: headers,
+                redirect: 'follow'
+            };
+
+            // Send a POST request
+            fetch("http://127.0.0.1:5050/login", requestOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log(data); // Handle the response data as needed
+                window.alert(data)
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('Login failed. Please try again later.'); // Show an alert or update the UI
+            });
+        });
+    </script>
+</body>
+</html>

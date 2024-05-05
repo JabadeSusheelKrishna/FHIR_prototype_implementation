@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Run command 1 in a new terminal window
-# gnome-terminal -- sudo docker run -p 8080:8080 hapiproject/hapi:latest &
+gnome-terminal -- sudo docker run -p 8080:8080 hapiproject/hapi:latest &
 
 # Run command 2 in a new terminal window
 gnome-terminal -- python3 central_server.py &
