@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table,
+        th {
+            padding: 10px;
+            background-color: aquamarine;
+        }
+
+        td {
+            padding: 10px;
+            background-color: rgb(150, 199, 182);
+        }
+    </style>
+    <script>
+        const data = {
+            "0": [
+                {
+                    "fullUrl": "http://localhost:8000/fhir/Patient/3",
+                    "resource": {
+                        "birthDate": "2000-01-01",
+                        "id": "3",
+                        "meta": {
+                            "lastUpdated": "2024-05-05T12:59:17.593+00:00",
+                            "source": "#yEN7OTXRpoyXxUOq",
+                            "versionId": "1"
+                        },
+                        "name": [
+                            {
+                                "given": [
+                                    "RadhikaKrishna"
+                                ],
+                                "use": "official"
+                            }
+                        ],
+                        "resourceType": "Patient",
+                        "telecom": [
+                            {
+                                "system": "phone",
+                                "use": "mobile",
+                                "value": "9911002233"
+                            }
+                        ]
+                    },
+                    "search": {
+                        "mode": "match"
+                    }
+                }
+            ]
+        }
+
+        while (Object.keys(data))
+    </script>
+</head>
+
+<body>
+    <table style="border: 2px black solid; border-radius : 15px; padding : 1px">
+        <tr>
+            <th>
+                Table Heading
+            </th>
+        </tr>
+        <tr>
+            <td>
+                Data 1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Data 2
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

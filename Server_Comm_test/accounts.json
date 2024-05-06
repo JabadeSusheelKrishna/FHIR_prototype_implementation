@@ -1,18 +1,1 @@
-{
-    "accounts": [
-        {
-            "username": "hospital_1",
-            "password": "admin",
-            "port": "5051",
-            "last_login": "13:55:31",
-            "token": "9YSNeJTbi2"
-        },
-        {
-            "username": "hospital_2",
-            "password": "admin",
-            "port": "5052",
-            "last_login": "13:56:41",
-            "token": "LKwPZw8qby"
-        }
-    ]
-}
+{"accounts": [{"username": "Apollo", "password": "Apollo", "port": "5051", "last_login": "23:32:03", "token": "iQm2Pzi6tQ"}, {"username": "Research", "password": "admin", "port": "5052", "last_login": "23:38:28", "token": "NQ1V0RG4fQ"}]}
