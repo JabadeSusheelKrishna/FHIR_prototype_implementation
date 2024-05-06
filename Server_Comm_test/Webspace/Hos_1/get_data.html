@@ -32,14 +32,17 @@
     <input type="text" id="token" name="token"><br><br>
     <button type="button" onclick="fetchData()">Fetch Consent</button>
   </form>
+    <h1 id="Data_heading"></h1>
     <table id="myTable">
         <thead>
             <tr>
-                <th id="Data_Head"> Data will be shown Here </th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>City</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Rows will be added here -->
+            <!-- JavaScript will add rows here -->
         </tbody>
     </table>
 </body>
@@ -71,22 +74,21 @@ async function fetchData() {
     const data_head = document.getElementById("Data_heading");
     data_head.textContent = "Patients Data Found = " + Object.keys(aggregated_data).length;
 
-    let count = 0
-    let Data_main = ""
-    while(count < Object.keys(aggregated_data).length){
-        Data_main += "Name : " + aggregated_data[count.toString()][0]["resource"]["name"][0]["given"][0]
-        Data_main += "<br>"
-        Data_main += "Date_Of_birth : " + "Name : " + aggregated_data[count.toString()][0]["resource"]["birthDate"]
-        Data_main += "<br>"
-        Data_main += "Phone : " + aggregated_data[count.toString()][0]["resource"]["telecom"][0]["value"][0]
-
+    function addRows() {
         var table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
-        var newRow = table.insertRow(table.rows.length);
-        var cell = newRow.insertCell(0);
-        cell.innerHTML = Data_main;
-        Data_main = ""
-        break
+        for(let key in aggregated_data){
+            var newRow = table.insertRow(table.rows.length);
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            cell1.innerHTML = aggregated_data[key][0].resource.birthDate;
+            cell2.innerHTML = aggregated_data[key][0].resource.name[0].given[0];
+            cell3.innerHTML = aggregated_data[key][0].resource.telecom[0].value;
+        }
     }
+
+    addRows()
+
 }
 
 async function fetchConsent(fname, lname, hospitalUsername) {
