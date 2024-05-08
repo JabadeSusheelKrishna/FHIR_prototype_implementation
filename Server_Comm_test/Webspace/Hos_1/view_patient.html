@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FHIR Patient Lookup</title>
+    <script src="./script.js"></script>
     <style>
         #response {
             margin-top: 20px;
@@ -29,7 +30,7 @@
     <script>
         function getPatientData() {
             var name = document.getElementById("nameInput").value;
-            var url = "http://localhost:8000/fhir/Patient?name="+name+"&_pretty=true"
+            var url = fhir_server_url + "/fhir/Patient?name="+name+"&_pretty=true"
             
             var xhr = new XMLHttpRequest();
             xhr.open("GET", url, true);

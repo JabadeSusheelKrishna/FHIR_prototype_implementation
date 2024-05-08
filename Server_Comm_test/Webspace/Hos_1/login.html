@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
+    <script src="./script.js"></script>
 </head>
 <body>
     <h2>Login Form</h2>
@@ -37,7 +38,8 @@
             };
 
             // Send a POST request
-            fetch("http://127.0.0.1:5050/login", requestOptions)
+            const uurl = central_server_url + "/login"
+            fetch(uurl, requestOptions)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

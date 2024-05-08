@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fetch Consent</title>
+<script src="./script.js"></script>
 <style>
     table {
         border-collapse: collapse;
@@ -36,9 +37,9 @@
     <table id="myTable">
         <thead>
             <tr>
+                <th>Date of birth</th>
                 <th>Name</th>
-                <th>Age</th>
-                <th>City</th>
+                <th>Mobile</th>
             </tr>
         </thead>
         <tbody>
@@ -52,13 +53,15 @@ async function fetchData() {
     const fname = document.getElementById('fname').value;
     const lname = document.getElementById('lname').value;
     const dob = document.getElementById('dob').value;
-    // const dob = temp_dob[8] + temp_dob[9] + "-" + temp_dob[5] + temp_dob[6] + "-" + temp_dob[0] + temp_dob[1] + temp_dob[2] + temp_dob[3]
     console.log(dob)
     const hospitalPort = document.getElementById('hospitalPort').value;
     const hospitalUsername = document.getElementById('hospitalUsername').value;
     const token = document.getElementById('token').value;
 
     const consent = await fetchConsent(fname, lname, hospitalUsername);
+    if(consent != "permission not given"){
+
+    }
     const hashid = await fetchHash(fname, lname, dob);
 
     const complete_ID = hashid + consent;
@@ -70,6 +73,7 @@ async function fetchData() {
     }
 
     const aggregated_data = await fetchRecords(dictionary)
+    console.log(aggregated_data)
 
     const data_head = document.getElementById("Data_heading");
     data_head.textContent = "Patients Data Found = " + Object.keys(aggregated_data).length;
@@ -98,7 +102,8 @@ async function fetchConsent(fname, lname, hospitalUsername) {
     };
 
     try {
-        const response = await fetch(`http://127.0.0.1:9005/retrive-consent?name=${fname}${lname}&hospital=${hospitalUsername}`, requestOptions);
+        const purl = patient_consent_url + `/retrive-consent?name=${fname}${lname}&hospital=${hospitalUsername}`
+        const response = await fetch(purl, requestOptions);
         const result = await response.text();
         console.log(`http://127.0.0.1:9005/retrive-consent?name=${fname}${lname}&hospital=${hospitalUsername}`);
         console.log("Consent", result);
@@ -120,7 +125,8 @@ async function fetchHash(fname, lname, dob) {
     };
 
     try {
-        const response = await fetch(`http://127.0.0.1:5051/give-me-hash?fname=${fname}&lname=${lname}&dob=${dob}`, requestOptions);
+        const hurl = hospital_server_url + `/give-me-hash?fname=${fname}&lname=${lname}&dob=${dob}`
+        const response = await fetch(hurl, requestOptions);
         console.log(`http://127.0.0.1:5051/give-me-hash?fname=${fname}&lname=${lname}&dob=${dob}`)
         const result = await response.text();
         console.log("hash : ", result);
@@ -138,7 +144,7 @@ async function fetchRecords(dictionary) {
     };
 
     try {
-        var url = "http://127.0.0.1:5050/get-details"
+        var url = central_server_url + "/get-details"
         url += "?patient=" + dictionary["patient"]
         url += "&id=" + dictionary["id"]
         url += "&username=" + dictionary["username"]

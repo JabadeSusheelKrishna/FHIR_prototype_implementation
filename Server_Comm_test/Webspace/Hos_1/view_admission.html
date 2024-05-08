@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Patient Encounter Data</title>
+<script src="./script.js"></script>
 <style>
   #encounterData {
     margin-top: 20px;
@@ -27,7 +28,7 @@
   <script>
     function getEncounterData() {
       var patientId = document.getElementById('patientId').value;
-      var url = 'http://localhost:8000/fhir/Encounter?patient=' + patientId + '&_pretty=true';
+      var url = fhir_server_url + '/fhir/Encounter?patient=' + patientId + '&_pretty=true';
 
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);

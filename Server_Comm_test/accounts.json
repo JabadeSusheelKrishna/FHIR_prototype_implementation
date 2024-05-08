@@ -1,1 +1,20 @@
-{"accounts": [{"username": "Apollo", "password": "Apollo", "port": "5051", "last_login": "23:32:03", "token": "iQm2Pzi6tQ"}, {"username": "Research", "password": "admin", "port": "5052", "last_login": "23:38:28", "token": "NQ1V0RG4fQ"}]}
+{
+    "accounts": [
+        {
+            "username": "Hospital_A",
+            "password": "admin",
+            "port": "5051",
+            "last_login": "09:55:47",
+            "token": "MLDnZ6aWCl",
+            "IP_Address": "http://127.0.0.1:5051"
+        },
+        {
+            "username": "Hospital_B",
+            "password": "admin",
+            "port": "5052",
+            "last_login": "09:59:40",
+            "token": "Rvv6CBiBCe",
+            "IP_Address": "http://127.0.0.1:5052"
+        }
+    ]
+}

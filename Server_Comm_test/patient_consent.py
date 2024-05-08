@@ -107,6 +107,8 @@ CORS(app)
 def retrive_consent():
     name = request.args.get('name')
     hospital = request.args.get('hospital')
+    print("----- RETRIVE CONSENT ------")
+    print(name, hospital)
     
     data = get_data_from_json(name, hospital)
     return data
