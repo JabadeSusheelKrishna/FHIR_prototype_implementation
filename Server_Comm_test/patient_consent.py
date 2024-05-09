@@ -60,6 +60,9 @@ def store_data_to_json(dictionary):
     # with open(file_name, "r") as file:
     #     data = json.load(file)["patients"]
     
+    print("Patients Data  : ", Patients_Data)
+    print("=================================")
+    
     flag = 0
     for each_patient in Patients_Data["patients"] :
         if(dictionary["name"] == each_patient["name"]):

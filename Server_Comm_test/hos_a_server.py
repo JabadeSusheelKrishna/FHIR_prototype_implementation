@@ -92,6 +92,7 @@ def patient_details():
     payload = {}
     headers = {}
     
+    list_of_patients = {}
     response = requests.request("GET", complete_url, headers=headers, data=payload)
     if(response.json()["total"] > 0):
         list_of_patients = response.json()["entry"]

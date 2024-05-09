@@ -10,4 +10,4 @@ gnome-terminal -- python3 central_server.py &
 gnome-terminal -- python3 hos_a_server.py &
 
 # Run command 4 in a new terminal window
-gnome-terminal -- python3 patient_consent &
+gnome-terminal -- python3 patient_consent.py &
