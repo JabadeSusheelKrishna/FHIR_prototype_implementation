@@ -1,1 +1,1 @@
-curl --location 'http://127.0.0.1:9005/give-consent?name=Susheelkrishna&permission=1'
+curl --location 'http://127.0.0.1:9005/give-consent?name=abcd_test&permission=1'

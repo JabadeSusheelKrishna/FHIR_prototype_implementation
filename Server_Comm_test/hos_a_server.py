@@ -101,4 +101,4 @@ def patient_details():
     return jsonify(list_of_patients)
 
 if __name__ == '__main__':
-    app.run(port=5051, debug=True)
+    app.run(port=5051, host='0.0.0.0', debug=True)

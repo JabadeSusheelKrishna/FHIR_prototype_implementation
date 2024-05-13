@@ -43,22 +43,10 @@ def get_data_from_json(hash_id, hospital):
                 each_patient["permission"] = 0
         elif(each_patient["name"] == hash_id):
             return "Hospital Name Not Getting Set"
-    
-    # store_data_from_ext_server(data)
-    # # with open(file_name, "w") as file:
-    #     # json.dump(data, file)
-    
-    # return msg
+
     return msg
 
-# def store_data_from_ext_server(new_data):
-#     payload = json.dumps(new_data)
-#     headers = {'Content-Type': 'application/json'}
-#     response = requests.request("GET", writer_url + "?filename="+file_name, headers=headers, data=payload)
-
 def store_data_to_json(dictionary):
-    # with open(file_name, "r") as file:
-    #     data = json.load(file)["patients"]
     
     print("Patients Data  : ", Patients_Data)
     print("=================================")
@@ -69,13 +57,6 @@ def store_data_to_json(dictionary):
             flag = 1
     if(flag != 1):
         Patients_Data["patients"].append(dictionary)
-        
-    # new_data = {"patients" : data}
-    
-    # Patients_Data = new_data
-        
-    # print(new_data)
-    # store_data_from_ext_server(new_data)
     
     return True
 
@@ -87,17 +68,11 @@ def generate_token():
 def update_permission(name, perm):
     
     return_val = "Error"
-    # with open(file_name, "r") as file:
-    #     data = json.load(file)["patients"]
         
     for each_patient in Patients_Data["patients"]:
         if(each_patient["name"] == name):
             each_patient["permission"] = perm
             return_val = "permission_granted"
-            
-    # new_data = {"patients" : data}
-    # with open(file_name, "w") as file:
-    #     json.dump(new_data, file)
         
     if(perm == 0):
         return_val = "Permission Not Granted"
@@ -145,17 +120,10 @@ def share_consent():
     print(Patients_Data)
     print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     return data
-
-    # return "data"
-    # time.sleep(3)
-    # return jsonify({"message": "hi"})
     
 @app.route('/check-request', methods=['GET'])
 def check_requests():
     name = request.args.get("name")
-    # with open(file_name, "r") as file:
-    #     data = json.load(file)["patients"]
-    #     print("AAAAA : ", name)
     
     print("\n\n ======== CHECK REQUEST =======")
     print(Patients_Data)
@@ -180,4 +148,4 @@ def give_consent():
     return update_permission(name, permission)
 
 if __name__ == '__main__':
-    app.run(port=9005, debug=True)
+    app.run(port=9005, host='0.0.0.0', debug=True)

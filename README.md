@@ -1,242 +1,101 @@
-# FHIR_prototype_implementation
-We are creating two servers and establishing communication between them.
-for server creattion we are using HAPI JAP server setup.
-for setting up the server, follow the below instructions : 
-> ### Server Setup
-> - Clone the JAP repository
+# Complete Set up guide
+
+### Cloning the Repository
+> - First you need to clone the Repo by running the below command
 > ```
-> git clone https://github.com/hapifhir/hapi-fhir-jpaserver-starter.git
+> git clone https://github.com/JabadeSusheelKrishna/FHIR_prototype_implementation.git
 > ```
-> - Now Navigate to src
+> - If you are unable to clone the Above repository, You can Just download Zip File
+> - Now, if you are able to see a folder named `FHIR_prototype_Implementation` then congrats. you are able to Download Our server in you Local Machine.
+
+### Setting Up Servers
+> - Now Lets first Setup the `Central Server and Patient Consent Server` by running below code.
+> - if you are not in `FHIR_prototype_Implementation` directory, the go to that directory by :
 > ```
-> cd hapi-fhir-jpaserver-starter/src 
+> cd FHIR_prototype_Implementation
 > ```
-> - Now run the following commands to start the server on your Local Host 8080 (This may take some time)
+> - Now go to `Server_Comm_test` folder by running the following : 
 > ```
-> docker pull hapiproject/hapi:latest
+> cd Server_Comm_test
 > ```
+> - Now run the following command to start the central server : 
 > ```
-> docker run -p 8080:8080 hapiproject/hapi:latest
+> python3 central_server.py
 > ```
-> - When you are able to see "0 deleted" then you can search `localhost:8080` on your web browser and start playing with it.
-
-# Status Quo
-presently this `app.py` code inserts, deletes, searches data in global fhir server. (Please donot insert any valuable information because it can be accessed by any one)
-
-[insert Demo](https://youtu.be/iHn6OmCZwik)
-[view Demo](https://youtu.be/Op5C65tiz1I)
-[delete](https://youtu.be/o_m1TGXyoug)
-
-# Running Program on Local Server
-> Setup the server on your Local Host Using Docker. (Instructions are given ![above](https://github.com/JabadeSusheelKrishna/FHIR_prototype_implementation?tab=readme-ov-file#server-setup))
-> Now Just Test the Server by clicking on Conformance button. You should be able to see 200/201 response code.
-> Now to start working on the server, we first need to create an organisation
->   - Search `organisations` tab from side - bar
->   - Go to Crud operations
->   - Go to create and enter this 
+> - Now Lets Run the Patient Consent Server by running the following command :
 > ```
-> { "resourceType": "Organization" }
+> python3 patient_consent.py
 > ```
-> json and click on create button.
->   - if you get 200/201 as response code, then Congradulations, You Setup your server.
->   - Now you can start sending data and receiving data from the server.
-> Now Copy the Link eg : 
+> - If you are able to see Server getting run on both codes, then you are successfully able to run Central Server
+> - (Note : Central server doesn't gets executed because of some module error, please install them/ upgrade them)
+> - Please donot reload any of the servers. Because data for now is stored in Volatile memory.
+
+### Now lets setup the Hospital Servers
+> - Run Hospital server by running the following commands. Also make sure that you are in `Server_Comm_test` directory
 > ```
-> localhost:8080/fhir
+> python3 hos_a_server.py
 > ```
->  and paste it in `Line 7 : app.py`.
-
-# Setup Elasticsearch with Docker
-
-## Prerequisites
-
-1. Install [Docker](https://www.docker.com/get-started) for your environment.
-2. If using Docker Desktop, allocate at least 4GB of memory. You can adjust memory usage in Docker Desktop by going to `Settings > Resources`.
-
-## Create a Docker Network
-
-1. Create a new Docker network:
-
-    ```bash
-    docker network create elastic
-    ```
-
-## Pull Elasticsearch Docker Image
-
-1. Pull the Elasticsearch Docker image:
-
-    ```bash
-    docker pull docker.elastic.co/elasticsearch/elasticsearch:8.13.2
-    ```
-
-### Optional: Verify Elasticsearch Image Signature
-
-1. Install Cosign for your environment.
-2. Verify the Elasticsearch image's signature:
-
-    ```bash
-    wget https://artifacts.elastic.co/cosign.pub
-    cosign verify --key cosign.pub docker.elastic.co/elasticsearch/elasticsearch:8.13.2
-    ```
-
-    The `cosign verify` command prints the check results and the signature payload in JSON format.
-
-## Start an Elasticsearch Container
-
-1. Start an Elasticsearch container:
-
-    ```bash
-    docker run --name es01 --net elastic -p 9200:9200 -it -m 1GB docker.elastic.co/elasticsearch/elasticsearch:8.13.2
-    ```
-
-    - Use the `-m` flag to set a memory limit for the container. This removes the need to manually set the JVM size.
-    - The command prints the `elastic` user password and an enrollment token for Kibana.
-
-2. Copy the generated `elastic` password and enrollment token. These credentials are only shown when you start Elasticsearch for the first time.
-
-### Regenerate Credentials
-
-1. To regenerate the `elastic` password, run:
-
-    ```bash
-    docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
-    ```
-
-2. To regenerate the enrollment token for Kibana, run:
-
-    ```bash
-    docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
-    ```
-
-### Store `elastic` Password
-
-1. Store the `elastic` password as an environment variable in your shell:
-
-    ```bash
-    export ELASTIC_PASSWORD="your_password"
-    ```
-
-## Copy SSL Certificate
-
-1. Copy the `http_ca.crt` SSL certificate from the container to your local machine:
-
-    ```bash
-    docker cp es01:/usr/share/elasticsearch/config/certs/http_ca.crt .
-    ```
-
-## Make a REST API Call
-
-1. Make a REST API call to Elasticsearch to ensure the Elasticsearch container is running:
-
-    ```bash
-    curl --cacert http_ca.crt -u elastic:$ELASTIC_PASSWORD https://localhost:9200
-    ```
-
-
-# Setup Elasticsearch and Kibana with Docker
-
-## Prerequisites
-
-1. Install [Docker](https://www.docker.com/get-started) for your environment.
-2. If using Docker Desktop, allocate at least 4GB of memory. You can adjust memory usage in Docker Desktop by going to `Settings > Resources`.
-
-## Create a Docker Network
-
-1. Create a new Docker network for Elasticsearch and Kibana:
-
-    ```bash
-    docker network create elastic
-    ```
-
-## Pull Elasticsearch Docker Image
-
-1. Pull the Elasticsearch Docker image:
-
-    ```bash
-    docker pull docker.elastic.co/elasticsearch/elasticsearch:8.13.2
-    ```
-
-### Optional: Verify Elasticsearch Image Signature
-
-1. Install Cosign for your environment.
-2. Verify the Elasticsearch image's signature:
-
-    ```bash
-    wget https://artifacts.elastic.co/cosign.pub
-    cosign verify --key cosign.pub docker.elastic.co/elasticsearch/elasticsearch:8.13.2
-    ```
-
-    The `cosign verify` command prints the check results and the signature payload in JSON format.
-
-## Start an Elasticsearch Container
-
-1. Start an Elasticsearch container:
-
-    ```bash
-    docker run --name es01 --net elastic -p 9200:9200 -it -m 1GB docker.elastic.co/elasticsearch/elasticsearch:8.13.2
-    ```
-
-    - Use the `-m` flag to set a memory limit for the container. This removes the need to manually set the JVM size.
-    - The command prints the `elastic` user password and an enrollment token for Kibana.
-
-2. Copy the generated `elastic` password and enrollment token. These credentials are only shown when you start Elasticsearch for the first time.
-
-### Regenerate Credentials
-
-1. To regenerate the elastic password, run:
-
-    ```bash
-    docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
-    ```
-
-2. To regenerate the enrollment token for Kibana, run:
-
-    ```bash
-    docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
-    ```
-
-## Pull Kibana Docker Image
-
-1. Pull the Kibana Docker image:
-
-    ```bash
-    docker pull docker.elastic.co/kibana/kibana:8.13.2
-    ```
-
-### Optional: Verify Kibana Image Signature
-
-1. Use Cosign to verify the Kibana image's signature:
-
-    ```bash
-    wget https://artifacts.elastic.co/cosign.pub
-    cosign verify --key cosign.pub docker.elastic.co/kibana/kibana:8.13.2
-    ```
-
-## Start a Kibana Container
-
-1. Start a Kibana container:
-
-    ```bash
-    docker run --name kib01 --net elastic -p 5601:5601 docker.elastic.co/kibana/kibana:8.13.2
-    ```
-
-    - When Kibana starts, it outputs a unique generated link to the terminal. To access Kibana, open this link in a web browser.
-    - In your browser, enter the enrollment token that was generated when you started Elasticsearch.
-
-### Regenerate Token and Password
-
-1. To regenerate the enrollment token, run:
-
-    ```bash
-    docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
-    ```
-
-2. To regenerate the password, run:
-
-    ```bash
-    docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic
-    ```
-
-Log in to Kibana as the `elastic` user with the password that was generated when you started Elasticsearch.
-
-
+> - if you are trying to test on the Single system, then for multiple hospitals test, please run the `hos_b_server.py`  and `hos_c_server.py`. because the IP address is same, so common port can create and issue.
+> - in case of multiple systems, You can run `hos_a_server.py` in different systems. because the Ip address changes for each system. So common port is not an issue.
+> - Now we also have to run the FHIR server to store patient data.
+> - Come Out of the `Server_Comm_test` folder by running : 
+> ```
+> cd ..
+> ```
+> - Now go to `hapi-fhir-jpaserver-starter` folder by running the following command : 
+> ```
+> cd hapi-fhir-jpaserver-starter
+> ```
+> - run the Docker on 8000 port by running the following command : 
+> ```
+> sudo docker run -p 8000:8080 hapiproject/hapi:latest
+> ```
+> - Enter your system password if asked.
+> - if you are able to see 0 deleted text getting repeated, then your FHIR implementation is working
+> - if you want to run for multiple hospitals, change the port to 8001, 8002 ... respectively and remember that `hos_b_server.py` and `hos_c_server.py` are linked to it respectively.
+
+### Registering Orgainzation
+> - go to browser and search the following : 
+> ```
+> localhost:8000
+> ```
+> - Now if you are able to see website, then your Docker server is running correctly.
+> - Now in left menu, search for the Organization.
+> - Go to Crud operations
+> - Go to search text field.
+> - Type the following in text field : 
+> ```
+> {"resourceType" : "Organization"}
+> ```
+> - click enter.
+> - You should be able to see success message. (200/201 response code)
+
+### Running the UI : 
+> - Open VS code and Open `Server_Comm_test` folder in it.
+> - Now go to `Webspace/Hos_1` folder and there you can see `home_portal.html` file.
+> - Make sure you have live server extension.
+> - Now right click the `home_portal.html` file. and `click open with liveserver`
+> - You will now get redirected to the webpage.
+> (Note : if you are getting any errors, please check `script.js` in Same directory. Make sure that all the links provided are correct)
+
+### Few Important Points to Remember :
+> - If you want to work in single system, them make use of Ports. (i.e make sure that servers are ran on different Ports).
+>    - also make sure that in text field of ip address, you need to provide `http://127.0.0.1:<port>`
+> - If you are working on different systems, then make sure that both systems are on network. then type `ifconfg` or `ip address` to get the ip address of that system.
+>    - suppose the ip address of the system where hospital server - 1 is running is `10.20.30.40` then during registration, please enter `http://10.20.30.40:<port_where_server_is_running>`.
+
+### Test cases that we tried on this system.
+> - (tested) One of the Hospital Has data and the other doesn't has the data
+> - (tested) More than one Hospital has the data and has consent to share
+> - (tested) All the hospitals have data of a patient and consent to share
+> - (tested) Hospital asking data without consent
+> - (tested) Hospitals having data but doesn't have share consent
+> - (tested) User neglects the consent
+> - (tested) Hospital with wrong access token (during get-data) or passowrd (during Login)
+> - (tested) No hospital has data of the patient
+> - (tested) reload of Central server without issues
+> - (tested) Adding patient details into the FHIR server
+> - (tested) Adding Patient hash id and name in Hospital Local Server
+
+
+# Thank you for providing the oppurtunity
