@@ -4,27 +4,15 @@ This code is to implement the central server
 
 from flask import Flask, jsonify, request
 import time
-import requests
-import pprint
-import json
 import string
 import random
 from flask_cors import CORS
 
-writer_url = "http://127.0.0.1:9069/json-write"
-
-file_name = 'patients.json'
-
-waiting_time = 30
+waiting_time = 30   # Change Waiting Time Here
 
 Patients_Data = {"patients" : []}
 
-def get_data_from_json(hash_id, hospital):
-    
-    print("00000------- PRESENT DATA ------000000")
-    print(Patients_Data)
-    print("--------------------------------------")
-    
+def get_data_from_dictionary(hash_id, hospital):
     for each_patient in Patients_Data["patients"]:
         if(each_patient["name"] == hash_id):
             each_patient["hospital"] = hospital
@@ -46,34 +34,45 @@ def get_data_from_json(hash_id, hospital):
 
     return msg
 
-def store_data_to_json(dictionary):
-    
-    print("Patients Data  : ", Patients_Data)
-    print("=================================")
-    
+def store_data_in_dictionary(dictionary):
+    """
+    Adds Data to the Dictionary
+    """
     flag = 0
     for each_patient in Patients_Data["patients"] :
         if(dictionary["name"] == each_patient["name"]):
             flag = 1
     if(flag != 1):
         Patients_Data["patients"].append(dictionary)
-    
     return True
 
 def generate_token():
+    """Generates 5 digit random consent ID which is permanent
+
+    Returns:
+        5 digit Consent ID
+    """
     length = 5
     characters = string.digits
     return ''.join(random.choice(characters) for _ in range(length))
 
 def update_permission(name, perm):
-    
+    """Updates the Permission section in the Dictionary
+
+    Args:
+        name (string): name of the Patient
+        perm (int): 0 or 1 denoting the permission
+
+    Returns:
+        String : Depicting the Success or Failure
+    """
     return_val = "Error"
         
     for each_patient in Patients_Data["patients"]:
         if(each_patient["name"] == name):
             each_patient["permission"] = perm
             return_val = "permission_granted"
-        
+    
     if(perm == 0):
         return_val = "Permission Not Granted"
     return return_val
@@ -83,23 +82,26 @@ CORS(app)
 
 @app.route('/retrive-consent', methods=['GET'])
 def retrive_consent():
+    """This Root is accessed when a Hospital needs Consent
+    to get data from other Hospitals.
+
+    Returns:
+        string : Consent ID if Permission is Given.
+    """
     name = request.args.get('name')
     hospital = request.args.get('hospital')
-    print("----- RETRIVE CONSENT ------")
-    print(name, hospital)
     
-    data = get_data_from_json(name, hospital)
+    data = get_data_from_dictionary(name, hospital)
     return data
 
 @app.route('/share-consent', methods=['GET'])
 def share_consent():
-    
-    print("~~~~~~~~~~~~~~~~~~~BEFORE ASKING PERMISSION~~~~~~~~~~~~~~~~~~~~~")
-    print(Patients_Data)
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    
-    # time.sleep(2)
-    print("----------------------------------")
+    """This Request is sent during the time of Patient Adding
+
+    Returns:
+        string : if permission is given, then consent id is sent.
+                else "permission not given" is sent
+    """
     name = request.args.get('name')
     hospital = request.args.get('hospital')
     permission = 0
@@ -111,23 +113,20 @@ def share_consent():
         "permission" : permission,
         "consent_id" : consent_id
     }
-    
-    
-    store_data_to_json(patient)
-    data = get_data_from_json(name, hospital)
-    
-    print("~~~~~~~~~~~~~~~~~~~AFTER ASKING PERMISSION~~~~~~~~~~~~~~~~~~~~~")
-    print(Patients_Data)
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+    store_data_in_dictionary(patient)                   # Stores the Data
+    data = get_data_from_dictionary(name, hospital)     # Seeks permission here
+
     return data
     
 @app.route('/check-request', methods=['GET'])
 def check_requests():
+    """Checks the Hopital requests to a particular patient
+
+    Returns:
+        string : Name of the Hospital requesting the consent
+    """
     name = request.args.get("name")
-    
-    print("\n\n ======== CHECK REQUEST =======")
-    print(Patients_Data)
-    print("++++++++++ COMPLETED +++++++++++\n\n")
     
     for each_patient in Patients_Data["patients"]:
         if(each_patient["name"] == name):
@@ -137,9 +136,14 @@ def check_requests():
 
 @app.route('/give-consent', methods=['GET'])
 def give_consent():
+    """Changes permission field in Dictionary for a patient
+
+    Returns:
+        string : "permission granted" if permission = 1
+        string : "permission not granted" if permission = 0
+    """
     name = request.args.get("name")
     permission = request.args.get("permission")
-    print("Permissions : ", permission)
     if(permission == "0"):
         permission = 0
     else:

@@ -8,12 +8,10 @@ import string
 from datetime import datetime
 from flask_cors import CORS
 
+central_server_port = 5050
 
 app = Flask(__name__)
 CORS(app)
-
-# Sample list of IDs (you can replace this with your own list of IDs)
-id_list = ['id1', 'id2', 'id3', 'id4', 'id5']
 
 hospitals = {}
 with open("accounts.json", "r") as file:
@@ -34,11 +32,7 @@ def send_requests_to_other_ids(current_id, name):
     count = 0
     print(hospitals)
     for id in hospitals:
-        # print(type(current_id))
         if str(hospitals[id][1]) != current_id:
-            # This is where we need to send request to respective server according to ID
-
-            # url = f"http://127.0.0.1:{hospitals[id]}/patient-details"
             url = hospitals[id][1] + "/patient-details"
             print("Request sent to : ", url)
             try:
@@ -48,7 +42,6 @@ def send_requests_to_other_ids(current_id, name):
             except requests.exceptions.RequestException as e:
                 responses[count] = str(e)
                 count += 1
-    # print(responses[0])
     return responses
 
 @app.route('/get-details', methods=['GET'])
@@ -60,26 +53,19 @@ def handle_request():
     hospital_id = request.args.get('id')    # IP_ADDRESS
     username = request.args.get('username')
     token = request.args.get('access_token')
-   
-    print(name, hospital_id)
     
     with open("accounts.json", "r") as file:
         data_f = json.load(file)["accounts"]
-        
-    print("----able to access file----")
     
-    permission_got = 0   
+    permission_got = 0
     for each_entry in data_f : 
         if(username == each_entry["username"] and token == each_entry["token"]):
-            permission_got = 1
-    # Send requests to all other IDs
+            permission_got = 1  # Verified Access Token
     if(permission_got):
-        print("Sending the Response :::::::: ")
         responses = send_requests_to_other_ids(hospital_id, name)
         return jsonify(responses)
     else:
         return "No Authorization. Please Login and Paste the correct token"
-    # return "Hello"
 
 @app.route('/register', methods=['POST', 'GET'])
 def registeration():
@@ -101,17 +87,16 @@ def registeration():
     with open('accounts.json', 'r') as file:
         print("Hello")
         data = json.load(file)
+        
     # Storing in Memory for faster access.
-    hospitals[username] = [port_number, ip_address]
-    print("Hospitals Dictionary : ", hospitals)
+    hospitals[username] = [port_number, ip_address]     # Storing Port and IP Address
     
     if username in [user['username'] for user in data["accounts"]]:
         return "Data Already Exists, Please Proceed Loggin in"
     else:
         data["accounts"].append(user_credentials)
-        print(data)
         with open('accounts.json', 'w') as file:
-            json.dump(data, file)
+            json.dump(data, file)       # Storing Registration Data
     return "Successfully registered\n"
 
 @app.route('/login', methods=['POST'])
@@ -120,7 +105,6 @@ def login():
     username = headers.get('username')
     password = headers.get('password')
     
-    # # Reading data
     with open('accounts.json', 'r') as file:
         data = json.load(file)
     
@@ -138,4 +122,4 @@ def login():
     return "-:[ERROR2]:- Account Not Found! Please register Again"
 
 if __name__ == '__main__':
-    app.run(port=5050, host='0.0.0.0', debug=True)
+    app.run(port=central_server_port, host='0.0.0.0', debug=True)
