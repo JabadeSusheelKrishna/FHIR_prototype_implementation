@@ -86,6 +86,17 @@
 >    - If you want to have more hospitals, then just copy the hos_a_server.py and change the Port number and FHIR server port in code (you can find them in `Line 4 and 5`
 >    - Similarly, for webiste, just change the `script.js` accordingly.
 
+### Application Part : 
+> - For application, clone the `swaroop_final` branch.
+> - There you can find a folder named `patient_consent`. You can find react native app there.
+> - Just cd to that directory and install packages and run the App.
+> ```
+> cd patient_consent
+> npm install
+> npm start
+> ```
+> - make sure that you update
+
 ### Test cases that we tried on this system.
 > - (tested) One of the Hospital Has data and the other doesn't has the data
 > - (tested) More than one Hospital has the data and has consent to share
