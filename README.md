@@ -83,6 +83,8 @@
 >    - also make sure that in text field of ip address, you need to provide `http://127.0.0.1:<port>`
 > - If you are working on different systems, then make sure that both systems are on network. then type `ifconfg` or `ip address` to get the ip address of that system.
 >    - suppose the ip address of the system where hospital server - 1 is running is `10.20.30.40` then during registration, please enter `http://10.20.30.40:<port_where_server_is_running>`.
+>    - If you want to have more hospitals, then just copy the hos_a_server.py and change the Port number and FHIR server port in code (you can find them in `Line 4 and 5`
+>    - Similarly, for webiste, just change the `script.js` accordingly.
 
 ### Test cases that we tried on this system.
 > - (tested) One of the Hospital Has data and the other doesn't has the data
