@@ -18,14 +18,20 @@
 > ```
 > cd Server_Comm_test
 > ```
-> - Now run the following command to start the central server : 
+> - Now try to run the `main_servers.sh` by following command : 
 > ```
-> python3 central_server.py
+> ./main_servers.sh
 > ```
-> - Now Lets Run the Patient Consent Server by running the following command :
-> ```
-> python3 patient_consent.py
-> ```
+> ### If you are unable to run above command, then try below
+> 
+> > - run the following command to start the central server : 
+> > ```
+> > python3 central_server.py
+> > ```
+> > - Now Lets Run the Patient Consent Server by running the following command :
+> > ```
+> > python3 patient_consent.py
+> > ```
 > - If you are able to see Server getting run on both codes, then you are successfully able to run Central Server
 > - (Note : Central server doesn't gets executed because of some module error, please install them/ upgrade them)
 > - Please donot reload any of the servers. Because data for now is stored in Volatile memory.
@@ -37,19 +43,23 @@
 > ```
 > - if you are trying to test on the Single system, then for multiple hospitals test, please run the `hos_b_server.py`  and `hos_c_server.py`. because the IP address is same, so common port can create and issue.
 > - in case of multiple systems, You can run `hos_a_server.py` in different systems. because the Ip address changes for each system. So common port is not an issue.
-> - Now we also have to run the FHIR server to store patient data.
-> - Come Out of the `Server_Comm_test` folder by running : 
+> - Now we also have to run the FHIR server to store patient data. for that run the below command : 
 > ```
-> cd ..
+> ./fhir_server.sh <port_number>
 > ```
-> - Now go to `hapi-fhir-jpaserver-starter` folder by running the following command : 
-> ```
-> cd hapi-fhir-jpaserver-starter
-> ```
-> - run the Docker on 8000 port by running the following command : 
-> ```
-> sudo docker run -p 8000:8080 hapiproject/hapi:latest
-> ```
+> ### IF you are not able to run above command, then try running below commands
+> >  - Come Out of the `Server_Comm_test` folder by running : 
+> >  ```
+> >  cd ..
+> >  ```
+> >  - Now go to `hapi-fhir-jpaserver-starter` folder by running the following command : 
+> >  ```
+> >  cd hapi-fhir-jpaserver-starter
+> >  ```
+> >  - run the Docker on 8000 port by running the following command : 
+> >  ```
+> >  sudo docker run -p 8000:8080 hapiproject/hapi:latest
+> >  ```
 > - Enter your system password if asked.
 > - if you are able to see 0 deleted text getting repeated, then your FHIR implementation is working
 > - if you want to run for multiple hospitals, change the port to 8001, 8002 ... respectively and remember that `hos_b_server.py` and `hos_c_server.py` are linked to it respectively.
@@ -57,18 +67,18 @@
 ### Registering Orgainzation
 > - go to browser and search the following : 
 > ```
-> localhost:8000
+> localhost:<port_of_fhir>
 > ```
 > - Now if you are able to see website, then your Docker server is running correctly.
 > - Now in left menu, search for the Organization.
-> - Go to Crud operations
-> - Go to search text field.
+> - Go to `Crud` operations
+> - Go to `search` text field.
 > - Type the following in text field : 
 > ```
 > {"resourceType" : "Organization"}
 > ```
-> - click enter.
-> - You should be able to see success message. (200/201 response code)
+> - click `Search`.
+> - You should be able to see success message. <b>(200/201 response code)</b>
 
 ### Running the UI : 
 > - Open VS code and Open `Server_Comm_test` folder in it.
@@ -109,6 +119,9 @@
 > - (tested) reload of Central server without issues
 > - (tested) Adding patient details into the FHIR server
 > - (tested) Adding Patient hash id and name in Hospital Local Server
-
+> - (not tested) Deleting the patient from FHIR server but not from Hospital local server
+> - (not tested) Trying to send request to Hospital without front end, and without patient consent.
+> - (not tested) Hospital servers accessing same FHIR server.
+> - (not tested) Verifying Hospital credentials during the Patient consent.
 
 # Thank you for providing the oppurtunity

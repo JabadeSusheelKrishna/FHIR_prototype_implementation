@@ -8,7 +8,8 @@ import string
 import random
 from flask_cors import CORS
 
-waiting_time = 30   # Change Waiting Time Here
+waiting_time = 30               # Change Waiting Time Here
+patient_consent_port = 9005     # you can change this accordingly
 
 Patients_Data = {"patients" : []}
 
@@ -152,4 +153,4 @@ def give_consent():
     return update_permission(name, permission)
 
 if __name__ == '__main__':
-    app.run(port=9005, host='0.0.0.0', debug=True)
+    app.run(port=patient_consent_port, host='0.0.0.0', debug=True)
