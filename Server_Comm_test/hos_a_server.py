@@ -41,17 +41,21 @@ def retrive_consent():
     data = generate_hash_id(first_name=fname, last_name=lname, dob=dob)
     return data
 
-@app.route('/store-hash', methods=['GET'])
+@app.route('/store-hash-in-json', methods=['POST'])
 def store_in_dict():
     '''
     Stores the data in the Dictionary
     '''
-    name = request.args.get('name')
-    hash = request.args.get('hash')
-    
-    Hash_data[hash] = name      # Storing the information in dictionary
-    
-    return "Added"
+    if request.method == 'POST':
+        data = request.get_json()
+        print("Received hash:", data['hash'])
+        print("Received fullname:", data['fullname'])
+            
+        Hash_data[data['hash']] = data['fullname']
+        
+        return "Hash stored successfully", 200
+    else:
+        return "Only POST requests are allowed", 405
     
 @app.route('/print', methods=['GET'])
 def print_Hash():
