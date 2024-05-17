@@ -56,6 +56,10 @@
             var name = patient.name[0].given[0];
             var phone = patient.telecom[0].value;
             var birthDate = patient.birthDate;
+            var id = patient.id;
+
+            var idPara = document.createElement("h1");
+            idPara.textContent = "ID: " + id;
 
             var nameHeading = document.createElement("h2");
             nameHeading.textContent = "Name: " + name;
@@ -65,7 +69,8 @@
             
             var birthDatePara = document.createElement("p");
             birthDatePara.textContent = "Birth Date: " + birthDate;
-            
+
+            patientDiv.appendChild(idPara);
             patientDiv.appendChild(nameHeading);
             patientDiv.appendChild(phonePara);
             patientDiv.appendChild(birthDatePara);
