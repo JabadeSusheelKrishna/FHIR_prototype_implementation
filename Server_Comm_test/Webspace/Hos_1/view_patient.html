@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FHIR Patient Lookup</title>
     <script src="./script.js"></script>
+    <link rel="stylesheet" href="../Styling/style2.css">
     <style>
         #response {
             margin-top: 20px;
@@ -80,10 +81,12 @@
     </script>
 </head>
 <body>
+    <div class="Main_content" style="margin: 25%; margin-top:10%; margin-bottom:10%">
     <h1>FHIR Patient Lookup</h1>
     <label for="nameInput">Enter Name:</label>
     <input type="text" id="nameInput">
     <button onclick="getPatientData()">Search</button>
     <div id="patientInfo"></div>
+    </div>
 </body>
 </html>

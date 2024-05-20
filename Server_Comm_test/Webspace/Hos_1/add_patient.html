@@ -6,9 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Patient</title>
   <script src="./script.js"></script>
+  <link rel="stylesheet" href="../Styling/style2.css">
 </head>
 
 <body>
+  <div class="Main_content" style="margin: 25%; margin-top:3%; margin-bottom:3%">
   <h1>Add Patient</h1>
   <form id="patientForm">
     <label for="hospital">Hospital:</label>
@@ -27,9 +29,10 @@
     <input type="date" id="birthDate" name="birthDate"><br><br>
     <label for="consent">Share data (yes/no) :</label>
     <input type="text" id="consent" name="consent"><br><br>
-    <h6 style="color: red;"> remember that you should wait for patient consent for 30 sec. So that patient decides whether you can share data to other organisations in the future.</h6>
+    <h6 style="color: red; font-size:larger"> remember that you should wait for patient consent for 30 sec. So that patient decides whether you can share data to other organisations in the future.</h6>
     <button type="submit">Submit</button>
   </form>
+  </div>
   <script>
 
     async function postData(url = '', data = {}) {

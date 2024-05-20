@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Patient Encounter Data</title>
 <script src="./script.js"></script>
+<link rel="stylesheet" href="../Styling/style2.css">
 <style>
   #encounterData {
     margin-top: 20px;
@@ -19,11 +20,13 @@
 </style>
 </head>
 <body>
+  <div class="Main_content" style="margin: 10%;">
   <h1>Patient Encounter Data</h1>
   <label for="patientId">Enter Patient ID:</label>
   <input type="text" id="patientId">
   <button onclick="getEncounterData()">Get Encounter Data</button>
   <div id="encounterData"></div>
+  </div>
 
   <script>
     function getEncounterData() {

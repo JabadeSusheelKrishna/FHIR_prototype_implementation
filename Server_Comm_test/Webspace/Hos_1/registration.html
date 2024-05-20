@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form</title>
     <script src="script.js"></script>
+    <link rel="stylesheet" href="../Styling/style2.css">
 </head>
 <body>
+    <div class="Main_content">
     <h2>Registration Form</h2>
     <form id="registrationForm">
         <label for="username">Username:</label><br>
@@ -19,6 +21,7 @@
         <input type="text" id="ip_address" name="ip_address" required><br><br>
         <button type="submit">Register</button>
     </form>
+    </div>
 
     <script>
         document.getElementById('registrationForm').addEventListener('submit', function(event) {
