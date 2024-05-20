@@ -1,156 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fetch Consent</title>
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-    th, td {
-        border: 1px solid black;
-        padding: 8px;
-        text-align: left;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Consent</title>
+    <script src="./script.js"></script>
+    <link rel="stylesheet" href="../Styling/style2.css">
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
 </head>
+
 <body>
-  <form>
-    <label for="fname">First Name:</label>
-    <input type="text" id="fname" name="fname"><br><br>
-    <label for="lname">Last Name:</label>
-    <input type="text" id="lname" name="lname"><br><br>
-    <label for="dob">Date of Birth:</label>
-    <input type="date" id="dob" name="dob"><br><br>
-    <label for="hospitalPort">Hospital Port:</label>
-    <input type="text" id="hospitalPort" name="hospitalPort"><br><br>
-    <label for="hospitalUsername">Hospital Username:</label>
-    <input type="text" id="hospitalUsername" name="hospitalUsername"><br><br>
-    <label for="token">Token:</label>
-    <input type="text" id="token" name="token"><br><br>
-    <button type="button" onclick="fetchData()">Fetch Consent</button>
-  </form>
+    <div class="Main_content" style="margin: 20%; margin-top:5%; margin-bottom:5%">
+    <h1>Get Data of Patients from Other Hospitals</h1>
+    <form>
+        <label for="fname">First Name:</label>
+        <input type="text" id="fname" name="fname"><br><br>
+        <label for="lname">Last Name:</label>
+        <input type="text" id="lname" name="lname"><br><br>
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob"><br><br>
+        <label for="hospitalPort">Your Hospital IP:</label>
+        <input type="text" id="hospitalPort" name="hospitalPort"><br><br>
+        <label for="hospitalUsername">Your Hospital Username:</label>
+        <input type="text" id="hospitalUsername" name="hospitalUsername"><br><br>
+        <label for="token">Token:</label>
+        <input type="text" id="token" name="token"><br><br>
+        <button type="button" onclick="fetchData()">Fetch Consent</button>
+    </form>
     <h1 id="Data_heading"></h1>
     <table id="myTable">
         <thead>
             <tr>
+                <th>Date of birth</th>
                 <th>Name</th>
-                <th>Age</th>
-                <th>City</th>
+                <th>Mobile</th>
             </tr>
         </thead>
         <tbody>
             <!-- JavaScript will add rows here -->
         </tbody>
     </table>
+    </div>
 </body>
 <script>
 
-async function fetchData() {
-    const fname = document.getElementById('fname').value;
-    const lname = document.getElementById('lname').value;
-    const dob = document.getElementById('dob').value;
-    // const dob = temp_dob[8] + temp_dob[9] + "-" + temp_dob[5] + temp_dob[6] + "-" + temp_dob[0] + temp_dob[1] + temp_dob[2] + temp_dob[3]
-    console.log(dob)
-    const hospitalPort = document.getElementById('hospitalPort').value;
-    const hospitalUsername = document.getElementById('hospitalUsername').value;
-    const token = document.getElementById('token').value;
+    async function fetchData() {
+        const fname = document.getElementById('fname').value;
+        const lname = document.getElementById('lname').value;
+        const dob = document.getElementById('dob').value;
+        console.log(dob)
+        const hospitalPort = document.getElementById('hospitalPort').value;
+        const hospitalUsername = document.getElementById('hospitalUsername').value;
+        const token = document.getElementById('token').value;
 
-    const consent = await fetchConsent(fname, lname, hospitalUsername);
-    const hashid = await fetchHash(fname, lname, dob);
+        const consent = await fetchConsent(fname, lname, hospitalUsername);
+        if (consent != "permission not given") {
+            const hashid = await fetchHash(fname, lname, dob);
 
-    const complete_ID = hashid + consent;
-    const dictionary = {
-        'patient' : complete_ID,
-        'id' : hospitalPort,
-        'username' : hospitalUsername,
-        'access_token' : token
-    }
+            const complete_ID = hashid + consent;
+            const dictionary = {
+                'patient': complete_ID,
+                'id': hospitalPort,
+                'username': hospitalUsername,
+                'access_token': token
+            }
 
-    const aggregated_data = await fetchRecords(dictionary)
+            const aggregated_data = await fetchRecords(dictionary)
+            console.log(aggregated_data)
 
-    const data_head = document.getElementById("Data_heading");
-    data_head.textContent = "Patients Data Found = " + Object.keys(aggregated_data).length;
+            const data_head = document.getElementById("Data_heading");
+            data_head.textContent = "Patients Data Found = " + Object.keys(aggregated_data).length;
 
-    function addRows() {
-        var table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
-        for(let key in aggregated_data){
-            var newRow = table.insertRow(table.rows.length);
-            var cell1 = newRow.insertCell(0);
-            var cell2 = newRow.insertCell(1);
-            var cell3 = newRow.insertCell(2);
-            cell1.innerHTML = aggregated_data[key][0].resource.birthDate;
-            cell2.innerHTML = aggregated_data[key][0].resource.name[0].given[0];
-            cell3.innerHTML = aggregated_data[key][0].resource.telecom[0].value;
+            function addRows() {
+                var table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
+                for (let key in aggregated_data[0]) {
+                    var newRow = table.insertRow(table.rows.length);
+                    var cell1 = newRow.insertCell(0);
+                    var cell2 = newRow.insertCell(1);
+                    var cell3 = newRow.insertCell(2);
+                    cell1.innerHTML = aggregated_data[0][key].resource.birthDate;
+                    cell2.innerHTML = aggregated_data[0][key].resource.name[0].given[0];
+                    cell3.innerHTML = aggregated_data[0][key].resource.telecom[0].value;
+                }
+            }
+
+            addRows()
         }
+
     }
 
-    addRows()
+    async function fetchConsent(fname, lname, hospitalUsername) {
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
 
-}
-
-async function fetchConsent(fname, lname, hospitalUsername) {
-    const requestOptions = {
-        method: "GET",
-        redirect: "follow"
-    };
-
-    try {
-        const response = await fetch(`http://127.0.0.1:9005/retrive-consent?name=${fname}${lname}&hospital=${hospitalUsername}`, requestOptions);
-        const result = await response.text();
-        console.log(`http://127.0.0.1:9005/retrive-consent?name=${fname}${lname}&hospital=${hospitalUsername}`);
-        console.log("Consent", result);
-        if (result !== "permission not given") {
-            return result;
-        } else {
+        try {
+            const purl = patient_consent_url + `/retrive-consent?name=${fname}${lname}&hospital=${hospitalUsername}`
+            const response = await fetch(purl, requestOptions);
+            const result = await response.text();
+            console.log(`http://127.0.0.1:9005/retrive-consent?name=${fname}${lname}&hospital=${hospitalUsername}`);
+            console.log("Consent", result);
+            return result
+        } catch (error) {
+            console.error(error);
             return "";
         }
-    } catch (error) {
-        console.error(error);
-        return "";
     }
-}
 
-async function fetchHash(fname, lname, dob) {
-    const requestOptions = {
-        method: "GET",
-        redirect: "follow"
-    };
+    async function fetchHash(fname, lname, dob) {
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
 
-    try {
-        const response = await fetch(`http://127.0.0.1:5051/give-me-hash?fname=${fname}&lname=${lname}&dob=${dob}`, requestOptions);
-        console.log(`http://127.0.0.1:5051/give-me-hash?fname=${fname}&lname=${lname}&dob=${dob}`)
-        const result = await response.text();
-        console.log("hash : ", result);
-        return result;
-    } catch (error) {
-        console.error(error);
-        return "";
+        try {
+            const hurl = hospital_server_url + `/give-me-hash?fname=${fname}&lname=${lname}&dob=${dob}`
+            const response = await fetch(hurl, requestOptions);
+            console.log(`http://127.0.0.1:5051/give-me-hash?fname=${fname}&lname=${lname}&dob=${dob}`)
+            const result = await response.text();
+            console.log("hash : ", result);
+            return result;
+        } catch (error) {
+            console.error(error);
+            return "";
+        }
     }
-}
 
-async function fetchRecords(dictionary) {
-    const requestOptions = {
-        method: "GET",
-        redirect: "follow"
-    };
+    async function fetchRecords(dictionary) {
+        const requestOptions = {
+            method: "GET",
+            redirect: "follow"
+        };
 
-    try {
-        var url = "http://127.0.0.1:5050/get-details"
-        url += "?patient=" + dictionary["patient"]
-        url += "&id=" + dictionary["id"]
-        url += "&username=" + dictionary["username"]
-        url += "&access_token=" + dictionary["access_token"]
-        const response = await fetch(url, requestOptions);
-        const result = await response.json();
-        console.log("Data : ", result);
-        return result;
-    } catch (error) {
-        console.error(error);
-        return "";
+        try {
+            var url = central_server_url + "/get-details"
+            url += "?patient=" + dictionary["patient"]
+            url += "&id=" + dictionary["id"]
+            url += "&username=" + dictionary["username"]
+            url += "&access_token=" + dictionary["access_token"]
+            const response = await fetch(url, requestOptions);
+            const result = await response.json();
+            console.log("Data : ", result);
+            return result;
+        } catch (error) {
+            console.error(error);
+            return "";
+        }
     }
-}
 </script>
+
 </html>

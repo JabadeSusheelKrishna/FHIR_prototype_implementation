@@ -1,1 +1,2 @@
-curl --location 'http://192.168.55.106:9005/check-request?name=abcdef'
+name_of_patient=$1
+curl --location "http://127.0.0.1:9005/check-request?name=$name_of_patient"

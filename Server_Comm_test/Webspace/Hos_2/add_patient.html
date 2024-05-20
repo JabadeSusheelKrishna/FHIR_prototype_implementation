@@ -5,9 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Patient</title>
+  <script src="./script.js"></script>
+  <link rel="stylesheet" href="../Styling/style2.css">
 </head>
 
 <body>
+  <div class="Main_content" style="margin: 25%; margin-top:3%; margin-bottom:3%">
   <h1>Add Patient</h1>
   <form id="patientForm">
     <label for="hospital">Hospital:</label>
@@ -26,8 +29,10 @@
     <input type="date" id="birthDate" name="birthDate"><br><br>
     <label for="consent">Share data (yes/no) :</label>
     <input type="text" id="consent" name="consent"><br><br>
+    <h6 style="color: red; font-size:larger"> remember that you should wait for patient consent for 30 sec. So that patient decides whether you can share data to other organisations in the future.</h6>
     <button type="submit">Submit</button>
   </form>
+  </div>
   <script>
 
     async function postData(url = '', data = {}) {
@@ -54,7 +59,8 @@
 
     async function appendHashToFile(hash, fullname) {
       try {
-        const response = await fetch("http://127.0.0.1:5051/store-hash-in-json", {
+        const uurl = hospital_server_url + "/store-hash-in-json"
+        const response = await fetch(uurl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -119,7 +125,8 @@
       };
 
       try {
-        const responseData = await postData("http://127.0.0.1:8000/fhir/Patient?_format=json", formData);
+        const furl = fhir_server_url + "/fhir/Patient?_format=json"
+        const responseData = await postData(furl, formData);
         console.log(responseData);
         alert('Patient added successfully!');
 
@@ -128,14 +135,14 @@
         const fullname = fir_name + las_name
         const birth_date = document.getElementById('birthDate').value;
 
-        const hashUrl = `http://127.0.0.1:5051/give-me-hash?fname=${fir_name}&lname=${las_name}&dob=${birth_date}`;
+        const hashUrl = hospital_server_url + `/give-me-hash?fname=${fir_name}&lname=${las_name}&dob=${birth_date}`;
         var hash = await generateHash(hashUrl);
         console.log('Hash generated successfully.');
 
         const form_consent = document.getElementById('consent').value
         if (form_consent == "yes") {
           const hospital = document.getElementById('hospital').value;
-          const consentUrl = `http://127.0.0.1:9005/share-consent?name=${fullname}&hospital=${hospital}`;
+          const consentUrl = patient_consent_url + `/share-consent?name=${fullname}&hospital=${hospital}`;
           const consentResponse = await fetchConsent(consentUrl);
           console.log(consentResponse);
 

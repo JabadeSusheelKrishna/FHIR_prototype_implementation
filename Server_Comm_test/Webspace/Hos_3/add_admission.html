@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encounter Form</title>
+    <script src="./script.js"></script>
+    <link rel="stylesheet" href="../Styling/style2.css">
 </head>
 <body>
-    <h2>Encounter Form</h2>
+    <div class="Main_content">
+    <h1>Encounter Form</h1>
     <form id="encounterForm">
         <label for="patient_id">Patient ID:</label><br>
         <input type="text" id="patient_id" name="patient_id"><br>
@@ -18,6 +21,7 @@
         <input type="text" id="reason" name="reason"><br><br>
         <button type="button" onclick="submitEncounter()">Submit</button>
     </form>
+    </div>
 
     <script>
         function submitEncounter() {
@@ -54,7 +58,8 @@
             var payloadString = JSON.stringify(payload);
 
             // Send POST request
-            fetch("http://localhost:8000/fhir/Encounter", {
+            const eurl = fhir_server_url + "/fhir/Encounter";
+            fetch(eurl, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

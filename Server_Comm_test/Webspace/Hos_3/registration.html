@@ -4,18 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="../Styling/style2.css">
 </head>
 <body>
+    <div class="Main_content">
     <h2>Registration Form</h2>
     <form id="registrationForm">
         <label for="username">Username:</label><br>
         <input type="text" id="username" name="username" required><br>
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br>
-        <label for="port">Port:</label><br>
+        <label for="port">Port Number:</label><br>
         <input type="text" id="port" name="port" required><br><br>
+        <label for="port">IP Address:</label><br>
+        <input type="text" id="ip_address" name="ip_address" required><br><br>
         <button type="submit">Register</button>
     </form>
+    </div>
 
     <script>
         document.getElementById('registrationForm').addEventListener('submit', function(event) {
@@ -25,9 +31,10 @@
             var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
             var port = document.getElementById('port').value;
+            var ip_address = document.getElementById('ip_address').value;
 
             // Construct the URL
-            var url = "http://127.0.0.1:5050/register?username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password) + "&port=" + encodeURIComponent(port);
+            var url = central_server_url + "/register?username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password) + "&port=" + encodeURIComponent(port) + "&ip_address=" + encodeURIComponent(ip_address);
 
             // Send a GET request
             fetch(url)

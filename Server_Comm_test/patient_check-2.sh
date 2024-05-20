@@ -1,1 +1,2 @@
-curl --location 'http://192.168.55.106:9005/give-consent?name=abcdef&permission=1'
+name_of_patient=$1
+curl --location "http://127.0.0.1:9005/give-consent?name=$name_of_patient&permission=1"

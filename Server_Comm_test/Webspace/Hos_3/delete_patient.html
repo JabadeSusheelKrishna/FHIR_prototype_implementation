@@ -4,18 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Delete Patient</title>
+<script src="./script.js"></script>
+<link rel="stylesheet" href="../Styling/style2.css">
 </head>
 <body>
-
-<h2>Delete Patient</h2>
+<div class="Main_content">
+<h1>Delete Patient</h1>
 
 <input type="text" id="patientId" placeholder="Enter Patient ID">
 <button onclick="deletePatient()">Delete</button>
+</div>
 
 <script>
 function deletePatient() {
     var p_id = document.getElementById("patientId").value;
-    var url = "http://127.0.0.1:8000/fhir/Patient/" + p_id + "?_pretty=true";
+    var url = fhir_server_url + "/fhir/Patient/" + p_id + "?_pretty=true";
 
     var xhr = new XMLHttpRequest();
     xhr.open("DELETE", url, true);
